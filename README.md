@@ -133,11 +133,11 @@ Consulta el precio aplicable a un producto en una marca concreta, en una fecha y
 
 ### 🔸 Parámetros de query (obligatorios)
 
-| Parámetro        | Tipo   | Descripción                                                          | Ejemplo               |
-|------------------|--------|----------------------------------------------------------------------|-----------------------|
-| `applicationDate`| String | Fecha y hora de aplicación (formato `yyyy-MM-dd'T'HH:mm:ss`)         | `2020-06-14T10:00:00` |
-| `productId`      | Long   | Identificador del producto                                           | `35455`               |
-| `brandId`        | Long   | Identificador de la cadena (marca)                                   | `1`                   |
+| Parámetro        | Tipo   | Descripción                                                  | Ejemplo               |
+|------------------|--------|--------------------------------------------------------------|-----------------------|
+| `applicationDate`| String | Fecha y hora de aplicación (formato `yyyy-MM-dd'T'HH:mm:ss`) | `2020-06-14T10:00:00` |
+| `productId`      | Long   | Identificador del producto                                   | `35455`               |
+| `brandId`        | Long   | Identificador de la marca                                    | `1`                   |
 
 ### ✅ Ejemplo de petición exitosa con `curl`
 
