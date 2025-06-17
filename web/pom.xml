@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.bcnc.ecommerce</groupId>
+        <artifactId>price-service</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>web</artifactId>
+    <name>Web Module (Primary Adapter)</name>
+    <description>REST API controllers and DTOs</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.bcnc.ecommerce</groupId>
+            <artifactId>domain</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.bcnc.ecommerce</groupId>
+            <artifactId>application</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- Spring Web -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+        </dependency>
+
+        <!-- Spring Context -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+
+        <!-- Validaciones -->
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+        </dependency>
+
+        <!-- Logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+
+        <!-- Necesaria para manejar excepciones como ServletException en el controlador global.
+       El contenedor (Tomcat embebido en Spring Boot) la proporciona en tiempo de ejecución,
+       por eso se marca con 'provided'. -->
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+</project>

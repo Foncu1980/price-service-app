@@ -1,0 +1,17 @@
+target/
+logs/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+

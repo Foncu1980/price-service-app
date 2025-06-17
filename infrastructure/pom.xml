@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.bcnc.ecommerce</groupId>
+        <artifactId>price-service</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>infrastructure</artifactId>
+    <name>Infrastructure Module (Secondary Adapters)</name>
+    <description>Persistence, external services integration, and other infrastructure details</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.bcnc.ecommerce</groupId>
+            <artifactId>domain</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- Jakarta Persistence API: para @Entity, @Id, etc. -->
+        <dependency>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
+        </dependency>
+
+        <!-- Spring Data Commons: utilidades internas de Spring Data -->
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-commons</artifactId>
+        </dependency>
+
+        <!-- Spring Context: para @Component, @Repository, @Autowired -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+
+        <!-- Spring Data JPA: incluye JpaRepository y @Query -->
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-jpa</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <scope>test</scope>
+       </dependency>
+       <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+<build>
+  <plugins>
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-dependency-plugin</artifactId>
+      <configuration>
+        <ignoredUnusedDeclaredDependencies>
+          <ignoredUnusedDeclaredDependency>org.springframework.boot:spring-boot-starter-data-jpa</ignoredUnusedDeclaredDependency>
+          <ignoredUnusedDeclaredDependency>com.h2database:h2</ignoredUnusedDeclaredDependency>
+        </ignoredUnusedDeclaredDependencies>
+      </configuration>
+    </plugin>
+  </plugins>
+  </build>
+
+</project>
