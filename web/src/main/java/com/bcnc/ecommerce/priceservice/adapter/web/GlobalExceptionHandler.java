@@ -1,12 +1,11 @@
 package com.bcnc.ecommerce.priceservice.adapter.web;
 
+import com.bcnc.ecommerce.priceservice.adapter.web.dto.PriceErrorResponse;
 import com.bcnc.ecommerce.priceservice.application.exception.PriceNotFoundException;
 
 import jakarta.validation.ConstraintViolationException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Map;
 
+import java.time.LocalDateTime;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -34,12 +33,6 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 @RestControllerAdvice
 public class GlobalExceptionHandler
 {
-    // Keys
-    private static final String KEY_TIMESTAMP = "timestamp";
-    private static final String KEY_STATUS = "status";
-    private static final String KEY_ERROR = "error";
-    private static final String KEY_MESSAGE = "message";
-
     // Mensajes
     private static final String MSG_INTERNAL_SERVER_ERROR = "Error interno del servidor";
     private static final String MSG_TYPE_MISMATCH = "Formato de parámetro inválido: ";
@@ -52,8 +45,7 @@ public class GlobalExceptionHandler
      * @return Respuesta HTTP 404 con mensaje informativo.
      */
     @ExceptionHandler(PriceNotFoundException.class)
-    public ResponseEntity<Map<String, Object>> handlePriceNotFound(PriceNotFoundException ex)
-    {
+    public ResponseEntity<PriceErrorResponse> handlePriceNotFound(PriceNotFoundException ex) {
         return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
@@ -64,8 +56,7 @@ public class GlobalExceptionHandler
      * @return Respuesta HTTP 400 con mensaje sobre el parámetro conflictivo.
      */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<Map<String, Object>> handleTypeMismatch(MethodArgumentTypeMismatchException ex)
-    {
+    public ResponseEntity<PriceErrorResponse> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
         return buildResponse(HttpStatus.BAD_REQUEST, MSG_TYPE_MISMATCH + ex.getName());
     }
 
@@ -76,8 +67,7 @@ public class GlobalExceptionHandler
      * @return Respuesta HTTP 400 con nombre del parámetro faltante.
      */
     @ExceptionHandler(MissingServletRequestParameterException.class)
-    public ResponseEntity<Map<String, Object>> handleMissingParams(MissingServletRequestParameterException ex)
-    {
+    public ResponseEntity<PriceErrorResponse> handleMissingParams(MissingServletRequestParameterException ex) {
         return buildResponse(HttpStatus.BAD_REQUEST, MSG_MISSING_PARAMETER + ex.getParameterName());
     }
 
@@ -88,8 +78,7 @@ public class GlobalExceptionHandler
      * @return Respuesta HTTP 400 con detalle del error.
      */
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Map<String, Object>> handleIllegalArgument(IllegalArgumentException ex)
-    {
+    public ResponseEntity<PriceErrorResponse> handleIllegalArgument(IllegalArgumentException ex) {
         return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
@@ -100,8 +89,7 @@ public class GlobalExceptionHandler
      * @return Respuesta HTTP 400 con mensaje del validador.
      */
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<Map<String, Object>> handleConstraintViolation(ConstraintViolationException ex)
-    {
+    public ResponseEntity<PriceErrorResponse> handleConstraintViolation(ConstraintViolationException ex) {
         return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
@@ -112,8 +100,7 @@ public class GlobalExceptionHandler
      * @return Respuesta HTTP 500 con mensaje genérico.
      */
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, Object>> handleGenericException(Exception ex)
-    {
+    public ResponseEntity<PriceErrorResponse> handleGenericException(Exception ex) {
         return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, MSG_INTERNAL_SERVER_ERROR);
     }
 
@@ -124,14 +111,8 @@ public class GlobalExceptionHandler
      * @param message Mensaje explicativo del error.
      * @return Objeto {@link ResponseEntity} con cuerpo detallado del error.
      */
-    private ResponseEntity<Map<String, Object>> buildResponse(HttpStatus status, String message)
-    {
-        Map<String, Object> body = Map.of(
-                KEY_TIMESTAMP, LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
-                KEY_STATUS, status.value(),
-                KEY_ERROR, status.getReasonPhrase(),
-                KEY_MESSAGE, message
-        );
-        return ResponseEntity.status(status).body(body);
+    private ResponseEntity<PriceErrorResponse> buildResponse(HttpStatus status, String message) {
+        PriceErrorResponse priceErrorResponse = new PriceErrorResponse(LocalDateTime.now(), status.value(), status.getReasonPhrase(), message);
+        return ResponseEntity.status(status).body(priceErrorResponse);
     }
 }

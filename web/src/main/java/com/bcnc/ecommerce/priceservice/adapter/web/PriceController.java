@@ -1,9 +1,17 @@
 package com.bcnc.ecommerce.priceservice.adapter.web;
 
+import com.bcnc.ecommerce.priceservice.adapter.web.dto.PriceErrorResponse;
 import com.bcnc.ecommerce.priceservice.adapter.web.dto.PriceResponse;
 import com.bcnc.ecommerce.priceservice.application.PriceService;
 import com.bcnc.ecommerce.priceservice.domain.model.Price;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import jakarta.validation.constraints.Min;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -43,13 +51,52 @@ public class PriceController
      * @param brandId ID de la marca.
      * @return respuesta con los datos del precio aplicable.
      */
-    @GetMapping("/calculate") //
+    @Operation(summary = "Obtiene el precio aplicable a un producto para una fecha dada")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Precio calculado correctamente",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = PriceResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Parámetros de entrada inválidos o faltantes",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = PriceErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "No se encontró tarifa aplicable",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = PriceErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Error interno",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = PriceErrorResponse.class)))
+    })
+    @GetMapping("/applicable") //
     public ResponseEntity<PriceResponse> getApplicablePrice(
+            @Parameter(
+                    name = "applicationDate",
+                    in = ParameterIn.QUERY,
+                    description = "Fecha y hora de aplicación en formato ISO-8601, ej: 2020-06-14T10:00:00",
+                    required = true,
+                    example = "2020-06-14T10:00:00",
+                    schema = @Schema(type = "string", format = "date-time")
+            )
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime applicationDate,
+
+            @Parameter(
+                    name = "productId",
+                    description = "ID del producto",
+                    required = true,
+                    example = "35455",
+                    schema = @Schema(type = "integer", format = "int64", minimum = "0")
+            )
             @RequestParam @Min(0) Long productId,
+
+            @Parameter(
+                    name = "brandId",
+                    description = "ID de la marca",
+                    required = true,
+                    example = "1",
+                    schema = @Schema(type = "integer", format = "int64", minimum = "0")
+            )
             @RequestParam @Min(0) Long brandId)
     {
-        LOG.info("Recibida petición GET /calculate con applicationDate={}, productId={}, brandId={}",
+        LOG.info("Recibida petición GET /applicable con applicationDate={}, productId={}, brandId={}",
                 applicationDate, productId, brandId);
 
         Price price = priceService.findApplicablePrice(applicationDate, productId, brandId);

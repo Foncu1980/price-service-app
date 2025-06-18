@@ -84,8 +84,8 @@ Hay dos perfiles posibles (dev y prod), que solo afectan a como se generan los l
 
 1. Clona el repositorio:
    ```bash
-   git clone https://github.com/Foncu1980/price-service.git
-   cd price-service
+   git clone https://github.com/Foncu1980/price-service-app.git
+   cd price-service-app
    ```
 
 2. Construye el proyecto (esto ejecutará todos los tests; añade -DskipTests para omitirlos):
@@ -111,7 +111,7 @@ Hay dos perfiles posibles (dev y prod), que solo afectan a como se generan los l
 2. Ejecuta el .jar con java:
 
   ```bash
-  java -jar bootstrap/target/bootstrap-1.1.0.jar
+  java -jar bootstrap/target/bootstrap-1.2.0-SNAPSHOT.jar
   ```
 
 ### Si no se tiene maven instalado, se puede usar el script Maven Wrapper incluido en el proyecto: **mvnw** (mvnw.cmd en windows)
@@ -132,22 +132,22 @@ La documentación interactiva de la API estará disponible en:
 
 El servicio expone un único **endpoint REST** para consultar precios:
 
-### `GET /prices/calculate`
+### `GET /prices/applicable`
 
 Consulta el precio aplicable a un producto en una marca concreta, en una fecha y hora determinadas.
 
 ### 🔸 Parámetros de query (obligatorios)
 
-| Parámetro        | Tipo   | Descripción                                                     | Ejemplo               |
-|------------------|--------|-----------------------------------------------------------------|-----------------------|
-| `applicationDate`| String | Fecha y hora de aplicación (formato `yyyy-MM-dd'T'HH:mm:ss`)    | `2020-06-14T10:00:00` |
-| `productId`      | Long   | Identificador del producto                                      | `35455`               |
-| `brandId`        | Long   | Identificador de la marca                                       | `1`                   |
+| Parámetro        | Tipo   | Descripción                                                          | Ejemplo               |
+|------------------|--------|----------------------------------------------------------------------|-----------------------|
+| `applicationDate`| String | Fecha y hora de aplicación (formato `yyyy-MM-dd'T'HH:mm:ss`)         | `2020-06-14T10:00:00` |
+| `productId`      | Long   | Identificador del producto                                           | `35455`               |
+| `brandId`        | Long   | Identificador de la cadena (marca)                                   | `1`                   |
 
 ### ✅ Ejemplo de petición exitosa con `curl`
 
 ```bash
-curl "http://localhost:8080/prices/calculate?applicationDate=2020-06-14T10:00:00&productId=35455&brandId=1"
+curl "http://localhost:8080/prices/applicable?applicationDate=2020-06-14T10:00:00&productId=35455&brandId=1"
 ```
 
 📥 Respuesta Exitosa (`200 OK`)
@@ -167,7 +167,7 @@ curl "http://localhost:8080/prices/calculate?applicationDate=2020-06-14T10:00:00
 ### ✅ Ejemplo de petición fallida con `curl`
 
 ```bash
-curl -X GET "http://localhost:8080/prices/calculate?applicationDate=2020-06-14T10:00:00&productId=35455&brandId=2"
+curl -X GET "http://localhost:8080/prices/applicable?applicationDate=2020-06-14T10:00:00&productId=35455&brandId=2"
 ```
 
 📥 Respuesta No encontrada (`404`)
@@ -187,7 +187,7 @@ Puedes usar curl o cualquier cliente REST (como Postman) para probar el endpoint
 1. Test 1: Petición a las 10:00 del día 14 del producto 35455 para la brand 1 (ZARA)
 
 ```bash
-curl "http://localhost:8080/prices/calculate?applicationDate=2020-06-14T10:00:00&productId=35455&brandId=1"
+curl "http://localhost:8080/prices/applicable?applicationDate=2020-06-14T10:00:00&productId=35455&brandId=1"
 ```
 
 Resultado esperado: Tarifa 1 (precio 35.50)
@@ -195,7 +195,7 @@ Resultado esperado: Tarifa 1 (precio 35.50)
 2. Test 2: Petición a las 16:00 del día 14 del producto 35455 para la brand 1 (ZARA)
 
 ```bash
-curl "http://localhost:8080/prices/calculate?applicationDate=2020-06-14T16:00:00&productId=35455&brandId=1"
+curl "http://localhost:8080/prices/applicable?applicationDate=2020-06-14T16:00:00&productId=35455&brandId=1"
 ```
 
 Resultado esperado: Tarifa 2 (precio 25.45) - Mayor prioridad
@@ -203,7 +203,7 @@ Resultado esperado: Tarifa 2 (precio 25.45) - Mayor prioridad
 3. Test 3: Petición a las 21:00 del día 14 del producto 35455 para la brand 1 (ZARA)
 
 ```bash
-curl "http://localhost:8080/prices/calculate?applicationDate=2020-06-14T21:00:00&productId=35455&brandId=1"
+curl "http://localhost:8080/prices/applicable?applicationDate=2020-06-14T21:00:00&productId=35455&brandId=1"
 ```
 
 Resultado esperado: Tarifa 1 (precio 35.50)
@@ -211,7 +211,7 @@ Resultado esperado: Tarifa 1 (precio 35.50)
 4. Test 4: Petición a las 10:00 del día 15 del producto 35455 para la brand 1 (ZARA)
 
 ```bash
-curl "http://localhost:8080/prices/calculate?applicationDate=2020-06-15T10:00:00&productId=35455&brandId=1"
+curl "http://localhost:8080/prices/applicable?applicationDate=2020-06-15T10:00:00&productId=35455&brandId=1"
 ```
 
 Resultado esperado: Tarifa 3 (precio 30.50)
@@ -219,7 +219,7 @@ Resultado esperado: Tarifa 3 (precio 30.50)
 5. Test 5: Petición a las 21:00 del día 16 del producto 35455 para la brand 1 (ZARA)
 
 ```bash
-curl "http://localhost:8080/prices/calculate?applicationDate=2020-06-16T21:00:00&productId=35455&brandId=1"
+curl "http://localhost:8080/prices/applicable?applicationDate=2020-06-16T21:00:00&productId=35455&brandId=1"
 ```
 
 Resultado esperado: Tarifa 4 (precio 38.95)
@@ -255,7 +255,7 @@ La clase `PriceControllerIntegrationTest`, ubicada en
 bootstrap/src/test/java/com/bcnc/ecommerce/priceservice/PriceControllerIntegrationTest.java
 ```
 
-contiene los tests de integración que validan el endpoint `/prices/calculate`. Se incluyen:
+contiene los tests de integración que validan el endpoint `/prices/applicable`. Se incluyen:
 
 - Los 5 casos funcionales definidos en el enunciado
 - Casos adicionales de validación y control de errores
@@ -271,7 +271,7 @@ Los resultados esperados están documentados en el apartado anterior.
 - ✔️ **Principios SOLID** – Aplicación de SRP, DIP y otros principios clave.
 - ✔️ **Servicio REST bien estructurado** – Uso de `@RestController`, DTOs, `ResponseEntity`, etc.
 - ✔️ **Validación y formato de fechas** – Control robusto con `@DateTimeFormat` y validaciones de entrada.
-- ✔️ **Manejo de errores** – Respuestas 404 cuando no se encuentra un precio aplicable.
+- ✔️ **Manejo de errores** – Respuestas 400 (Bad request), 404 cuando no se encuentra un precio aplicable, 500 error general.
 - ✔️ **Tests de integración completos** – Verificación de todos los escenarios funcionales requeridos.
 - ✔️ **Inicialización automática de datos** – Script `data.sql` cargado en arranque para entorno H2.
 - ✔️ **JavaDoc completo** – Documentación presente en las clases públicas clave.

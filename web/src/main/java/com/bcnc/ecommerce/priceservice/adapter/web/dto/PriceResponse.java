@@ -1,5 +1,6 @@
 package com.bcnc.ecommerce.priceservice.adapter.web.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -24,36 +25,25 @@ import java.time.LocalDateTime;
  * }
  * </pre>
  */
-public class PriceResponse
-{
-    public final Long productId;
-    public final Long brandId;
-    public final Integer priceList;
-    public final LocalDateTime startDate;
-    public final LocalDateTime endDate;
-    public final BigDecimal price;
-    public final String curr;
+public record PriceResponse(
+        @Schema(description = "Identificador del producto", example = "35455")
+        Long productId,
 
-    /**
-     * Constructor completo para inicializar todos los campos del DTO.
-     *
-     * @param productId Identificador del producto.
-     * @param brandId Identificador de la cadena comercial.
-     * @param priceList Identificador de la tarifa aplicable.
-     * @param startDate Fecha de inicio de validez de la tarifa.
-     * @param endDate Fecha de fin de validez de la tarifa.
-     * @param price Precio a aplicar.
-     * @param curr Código de moneda (ej: EUR).
-     */
-    public PriceResponse(Long productId, Long brandId, Integer priceList, LocalDateTime startDate,
-                         LocalDateTime endDate, BigDecimal price, String curr)
-    {
-        this.productId = productId;
-        this.brandId = brandId;
-        this.priceList = priceList;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.price = price;
-        this.curr = curr;
-    }
-}
+        @Schema(description = "Identificador de la marca", example = "1")
+        Long brandId,
+
+        @Schema(description = "Identificador de la tarifa", example = "2")
+        Integer priceList,
+
+        @Schema(description = "Fecha de inicio de validez", example = "2020-06-14T15:00:00")
+        LocalDateTime startDate,
+
+        @Schema(description = "Fecha de fin de validez", example = "2020-06-14T18:30:00")
+        LocalDateTime endDate,
+
+        @Schema(description = "Precio final", example = "25.45")
+        BigDecimal price,
+
+        @Schema(description = "Moneda", example = "EUR")
+        String curr
+) {}

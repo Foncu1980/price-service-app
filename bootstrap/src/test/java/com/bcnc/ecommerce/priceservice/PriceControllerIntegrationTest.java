@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("Tests de integración para PriceController")
 public class PriceControllerIntegrationTest
 {
-    private static final String PRICE_CALCULATION_ENDPOINT = "/prices/calculate";
+    private static final String PRICE_CALCULATION_ENDPOINT = "/prices/applicable";
     private static final String PARAM_DATE = "applicationDate";
     private static final String PARAM_PRODUCT = "productId";
     private static final String PARAM_BRAND = "brandId";

@@ -43,6 +43,7 @@
     <spring.boot.version>3.3.1</spring.boot.version>
     <spring.data.commons.version>3.5.0</spring.data.commons.version>
     <spring.data.jpa.version>3.5.0</spring.data.jpa.version>
+    <maven.surefire.plugin.version>3.2.5</maven.surefire.plugin.version>
   </properties>
 
   <build>
@@ -66,6 +67,12 @@
           <configuration>
             <mainClass>com.bcnc.ecommerce.priceservice.PriceServiceApplication</mainClass>
           </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${maven.surefire.plugin.version}</version>
         </plugin>
 
       </plugins>
