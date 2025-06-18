@@ -111,7 +111,7 @@ Hay dos perfiles posibles (dev y prod), que solo afectan a como se generan los l
 2. Ejecuta el .jar con java:
 
   ```bash
-  java -jar bootstrap/target/bootstrap-1.0.0.jar
+  java -jar bootstrap/target/bootstrap-1.1.0.jar
   ```
 
 ### Si no se tiene maven instalado, se puede usar el script Maven Wrapper incluido en el proyecto: **mvnw** (mvnw.cmd en windows)
