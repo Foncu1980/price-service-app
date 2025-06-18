@@ -125,6 +125,11 @@ Hay dos perfiles posibles (dev y prod), que solo afectan a como se generan los l
 
 ## 📡 Cómo Probar la Aplicación
 
+La documentación interactiva de la API estará disponible en:
+
+- [📘 Swagger UI](http://localhost:8080/swagger-ui/index.html)
+- [📄 OpenAPI JSON (v3)](http://localhost:8080/v3/api-docs)
+
 El servicio expone un único **endpoint REST** para consultar precios:
 
 ### `GET /prices/calculate`
