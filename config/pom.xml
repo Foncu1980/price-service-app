@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- hereda las versiones y la configuración común del pom padre -->
+    <parent>
+        <groupId>com.bcnc.ecommerce</groupId>
+        <artifactId>price-service</artifactId>
+	<version>1.2.0-SNAPSHOT</version> 
+    </parent>
+
+    <artifactId>config</artifactId>
+    <name>price-service-config</name>
+    <packaging>jar</packaging>
+
+    <!-- Dependencias necesarias para que Spring detecte la clase de configuración
+         y para usar las anotaciones de OpenAPI -->
+    <dependencies>
+        <!-- Spring Boot básico (Component Scan, @Configuration, etc.) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+
+        <!-- Starter de springdoc-openapi con Swagger UI ya integrado -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>
+

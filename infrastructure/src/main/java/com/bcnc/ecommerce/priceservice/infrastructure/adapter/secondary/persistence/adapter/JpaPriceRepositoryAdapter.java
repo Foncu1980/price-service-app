@@ -39,12 +39,12 @@ public class JpaPriceRepositoryAdapter implements PriceRepository
     }
 
     /**
-     * Recupera el precio con mayor prioridad que aplica al producto y marca especificados
+     * Recupera el precio con mayor prioridad que aplica al producto y cadena especificados
      * en la fecha proporcionada.
      *
      * @param applicationDate fecha de aplicación para la búsqueda.
      * @param productId       identificador del producto.
-     * @param brandId         identificador de la marca.
+     * @param brandId         identificador de la cadena.
      * @return un {@link Price} aplicable, si existe; de lo contrario, vacío.
      */
     @Override

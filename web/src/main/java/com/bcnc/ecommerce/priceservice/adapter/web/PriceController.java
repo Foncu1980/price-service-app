@@ -6,6 +6,7 @@ import com.bcnc.ecommerce.priceservice.application.PriceService;
 import com.bcnc.ecommerce.priceservice.domain.model.Price;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -27,7 +28,7 @@ import java.time.LocalDateTime;
 
 /**
  * Controlador REST que expone un endpoint para consultar el precio aplicable
- * a un producto de una marca en una fecha determinada.
+ * a un producto de una cadena en una fecha determinada.
  */
 @RestController
 @RequestMapping("/prices")
@@ -44,27 +45,58 @@ public class PriceController
     }
 
     /**
-     * Endpoint que calcula el precio aplicable dado un producto, marca y fecha.
+     * Endpoint que calcula el precio aplicable dado un producto, cadena y fecha.
      *
      * @param applicationDate fecha y hora de aplicación del precio (en formato ISO).
      * @param productId ID del producto.
-     * @param brandId ID de la marca.
+     * @param brandId ID de la cadena.
      * @return respuesta con los datos del precio aplicable.
      */
     @Operation(summary = "Obtiene el precio aplicable a un producto para una fecha dada")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Precio calculado correctamente",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = PriceResponse.class))),
+                            schema = @Schema(implementation = PriceResponse.class))
+            ),
             @ApiResponse(responseCode = "400", description = "Parámetros de entrada inválidos o faltantes",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = PriceErrorResponse.class))),
+                            schema = @Schema(implementation = PriceErrorResponse.class),
+                            examples = @ExampleObject(name = "BadRequest", value = """
+                {
+                  "timestamp": "2025-06-18T17:27:56.976Z",
+                  "status": 400,
+                  "error": "Bad Request",
+                  "message": "El parámetro 'productId' es obligatorio"
+                }
+            """)
+                    )
+            ),
             @ApiResponse(responseCode = "404", description = "No se encontró tarifa aplicable",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = PriceErrorResponse.class))),
-            @ApiResponse(responseCode = "500", description = "Error interno",
+                            schema = @Schema(implementation = PriceErrorResponse.class),
+                            examples = @ExampleObject(name = "NotFound", value = """
+                {
+                  "timestamp": "2025-06-18T17:27:56.976Z",
+                  "status": 404,
+                  "error": "Not Found",
+                  "message": "No se encontró un precio para el producto 99999"
+                }
+            """)
+                    )
+            ),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = PriceErrorResponse.class)))
+                            schema = @Schema(implementation = PriceErrorResponse.class),
+                            examples = @ExampleObject(name = "InternalServerError", value = """
+                {
+                  "timestamp": "2025-06-18T17:27:56.976Z",
+                  "status": 500,
+                  "error": "Internal Server Error",
+                  "message": "Se ha producido un error inesperado"
+                }
+            """)
+                    )
+            )
     })
     @GetMapping("/applicable") //
     public ResponseEntity<PriceResponse> getApplicablePrice(
@@ -89,7 +121,7 @@ public class PriceController
 
             @Parameter(
                     name = "brandId",
-                    description = "ID de la marca",
+                    description = "ID de la cadena",
                     required = true,
                     example = "1",
                     schema = @Schema(type = "integer", format = "int64", minimum = "0")

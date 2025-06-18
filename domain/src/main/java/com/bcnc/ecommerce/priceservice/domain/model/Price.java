@@ -7,7 +7,7 @@ import java.util.Objects;
 // Comentario: Dependiendo de
 
 /**
- * Modelo de dominio que representa un precio aplicable a un producto de una marca
+ * Modelo de dominio que representa un precio aplicable a un producto de una cadena
  * en un intervalo de fechas determinado.
  * <p>
  * Incluye información como la tarifa (priceList), prioridad de aplicación,
@@ -35,7 +35,7 @@ public final class Price
      * Lanza una {@link IllegalArgumentException} si alguno de los parámetros no cumple con los requisitos esperados.
      * </p>
      *
-     * @param brandId   identificador de la marca (no nulo y positivo).
+     * @param brandId   identificador de la cadena (no nulo y positivo).
      * @param startDate fecha de inicio del periodo de validez del precio (no nula).
      * @param endDate   fecha de fin del periodo de validez del precio (no nula y posterior a {@code startDate}).
      * @param priceList identificador de la tarifa (no nulo y positivo).

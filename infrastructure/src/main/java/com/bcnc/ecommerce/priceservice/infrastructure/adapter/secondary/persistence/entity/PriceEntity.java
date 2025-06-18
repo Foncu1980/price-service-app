@@ -18,19 +18,19 @@ import java.util.Objects;
  * Entidad JPA que representa una tarifa de precio en la base de datos.
  *
  * <p>Está mapeada a la tabla <strong>PRICES</strong> y contiene información sobre la
- * validez, prioridad y valor de una tarifa para un producto de una marca específica.</p>
+ * validez, prioridad y valor de una tarifa para un producto de una cadena específica.</p>
  *
  * <p>Implementa {@link Serializable} por buenas prácticas, especialmente si se usara en
  * mecanismos como sesiones HTTP o almacenamiento en caché.</p>
  */
-@Entity // Marca esta clase como una entidad JPA
+@Entity // cadena esta clase como una entidad JPA
 @Table(name = "PRICES")
 public class PriceEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
 
     // Estrategia de generación de ID (auto-incremento para H2)
-    @Id // Marca el campo como la clave primaria
+    @Id // cadena el campo como la clave primaria
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // ID interno de la entidad para JPA
 
@@ -70,7 +70,7 @@ public class PriceEntity implements Serializable
     /**
      * Constructor completo (sin ID).
      *
-     * @param brandId    ID de la marca
+     * @param brandId    ID de la cadena
      * @param startDate  Fecha de inicio de la tarifa
      * @param endDate    Fecha de fin de la tarifa
      * @param priceList  Lista de tarifas

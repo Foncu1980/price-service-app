@@ -15,12 +15,12 @@ import java.util.Optional;
 public interface PriceRepository
 {
 /**
- * Recupera el precio más prioritario aplicable a un producto y marca en una fecha dada.
+ * Recupera el precio más prioritario aplicable a un producto y cadena en una fecha dada.
  * Si existen varios precios válidos para el mismo rango, se devuelve el de mayor prioridad.
  *
  * @param applicationDate fecha de aplicación
  * @param productId identificador del producto
- * @param brandId identificador de la marca
+ * @param brandId identificador de la cadena
  * @return un {@link Price} con mayor prioridad, si existe
  */
     Optional<Price> findTopPriceByProductIdAndBrandIdAndDate(LocalDateTime applicationDate, Long productId, Long brandId);

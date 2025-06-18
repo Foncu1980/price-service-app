@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 
 /**
  * Implementación del servicio de aplicación {@link PriceService} que
- * se encarga de recuperar el precio aplicable para un producto de una marca
+ * se encarga de recuperar el precio aplicable para un producto de una cadena
  * en una fecha determinada.
  *
  * <p>
@@ -41,11 +41,11 @@ public class PriceServiceImpl implements PriceService
     }
 
     /**
-     * Recupera el precio más prioritario aplicable a un producto de una marca en una fecha dada.
+     * Recupera el precio más prioritario aplicable a un producto de una cadena en una fecha dada.
      *
      * @param applicationDate Fecha de aplicación del precio
      * @param productId ID del producto
-     * @param brandId ID de la marca
+     * @param brandId ID de la cadena
      * @return Precio aplicable
      * @throws PriceNotFoundException si no existe ninguna tarifa válida para los parámetros indicados
      */

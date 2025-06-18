@@ -29,7 +29,7 @@ public record PriceResponse(
         @Schema(description = "Identificador del producto", example = "35455")
         Long productId,
 
-        @Schema(description = "Identificador de la marca", example = "1")
+        @Schema(description = "Identificador de la cadena", example = "1")
         Long brandId,
 
         @Schema(description = "Identificador de la tarifa", example = "2")

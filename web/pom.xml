@@ -27,6 +27,12 @@
             <version>${project.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.bcnc.ecommerce</groupId>
+            <artifactId>config</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
         <!-- Spring Web -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -57,9 +63,9 @@
         </dependency>
 
         <!-- Necesaria para manejar excepciones como ServletException en el controlador global.
-       El contenedor (Tomcat embebido en Spring Boot) la proporciona en tiempo de ejecución,
-       por eso se marca con 'provided'. -->
-        <dependency>
+        El contenedor embebido (por ejemplo, Tomcat en Spring Boot) la proporciona en tiempo de ejecución,
+        por lo que se declara con alcance 'provided'. -->
+	<dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
             <scope>provided</scope>

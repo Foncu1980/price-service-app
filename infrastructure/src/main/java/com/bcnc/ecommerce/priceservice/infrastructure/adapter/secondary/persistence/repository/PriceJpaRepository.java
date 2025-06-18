@@ -15,20 +15,20 @@ import java.util.List;
  * Repositorio JPA para acceder a la entidad {@link PriceEntity}.
  *
  * <p>Define una consulta personalizada para obtener la tarifa aplicable con mayor prioridad
- * en función del producto, la marca y la fecha de aplicación.</p>
+ * en función del producto, la cadena y la fecha de aplicación.</p>
  */
 @Repository
 public interface PriceJpaRepository extends JpaRepository<PriceEntity, Long>
 {
     /**
-     * Busca las tarifas que aplican a un producto y marca en una fecha específica,
+     * Busca las tarifas que aplican a un producto y cadena en una fecha específica,
      * ordenadas por prioridad descendente.
      *
      * <p>Se utiliza {@link Pageable} para limitar el número de resultados (usualmente 1).</p>
      *
      * @param applicationDate  fecha en la que debe aplicarse la tarifa.
      * @param productId        identificador del producto.
-     * @param brandId          identificador de la marca.
+     * @param brandId          identificador de la cadena.
      * @param pageable         objeto para limitar y ordenar los resultados.
      * @return lista de tarifas aplicables ordenadas por prioridad (de mayor a menor).
      */

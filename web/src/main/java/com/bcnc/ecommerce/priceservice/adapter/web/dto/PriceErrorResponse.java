@@ -18,31 +18,8 @@ import java.time.LocalDateTime;
  * </pre>
  */
 public record PriceErrorResponse(
-
-        @Schema(
-                description = "Fecha y hora del error",
-                example = "2025-06-17T18:40:00",
-                type = "string",
-                format = "date-time"
-        )
         LocalDateTime timestamp,
-
-        @Schema(
-                description = "Código de estado HTTP",
-                example = "404"
-        )
         int status,
-
-        @Schema(
-                description = "Nombre del error HTTP",
-                example = "Not Found"
-        )
         String error,
-
-        @Schema(
-                description = "Mensaje detallado del error",
-                example = "No se encontró un precio para el producto 99999"
-        )
         String message
-
 ) {}

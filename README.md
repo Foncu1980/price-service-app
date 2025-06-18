@@ -1,8 +1,10 @@
 # 🧾 Price Service
 
-Este proyecto implementa un servicio REST en Spring Boot para consultar el precio aplicable de un producto, para una marca específica, en una fecha y hora dadas.
+Este proyecto implementa un servicio REST en Spring Boot para consultar el precio aplicable de un producto, para una cadena específica, en una fecha y hora dadas.
 
 La aplicación sigue los principios de la Arquitectura Hexagonal, el diseño SOLID, y utiliza una base de datos en memoria H2 para la persistencia.
+
+📦 [Repositorio en GitHub](https://github.com/Foncu1980/price-service-app)
 
 ---
 
@@ -22,6 +24,7 @@ price-service/
 ├── domain/         # Entidades de dominio y puertos de salida
 ├── application/    # Casos de uso y puertos de entrada
 ├── infrastructure/ # Adaptadores secundarios (persistencia con JPA/H2)
+├── config/         # Configuración de la documentación OpenAPI
 ├── web/            # Adaptadores primarios (exposición vía REST API)
 ├── bootstrap/      # Módulo de arranque de Spring Boot (main class)
 ├── mvnw            # Maven Wrapper script, por si no se tiene maven instalado
@@ -62,7 +65,7 @@ Ubicado en `bootstrap/src/main/resources/application.properties`, este archivo d
 Este archivo permite ejecutar la aplicación sin necesidad de configurar una base de datos externa.
 
 ### 📄 `logback-spring.xml`
-Ubicado en `src/main/resources/logback-spring.xml`, este archivo define la configuración de logeo de la aplicación, incluyendo:
+Ubicado en `src/main/resources/logback-spring.xml`, este archivo define la configuración del sistema de logs de la aplicación, incluyendo:
 
  - Nivel de logs (INFO, DEBUG, ERROR, etc.)
  - Formato de los mensajes
@@ -76,7 +79,8 @@ Spring Boot lo carga automáticamente al arrancar la aplicación.
 Es una configuración simple, por lo que está hecha en un solo archivo. Podríamos tener configuraciones
 diferentes por perfil.
 
-Hay dos perfiles posibles (dev y prod), que solo afectan a como se generan los logs (ver **logback-spring.xml**). Hecho a modo de ejemplo.
+Hay dos perfiles posibles (dev y prod), que solo afectan a cómo se generan los logs (ver **logback-spring.xml**).
+Hecho a modo de ejemplo.
 
 ---
 
@@ -100,7 +104,7 @@ Hay dos perfiles posibles (dev y prod), que solo afectan a como se generan los l
   
 4. La aplicación se iniciará en http://localhost:8080 (puerto por defecto).
 
-### Alternativa para arrancar la aplicacion
+### Alternativa para arrancar la aplicación
 
 1. Compila el proyecto generando un jar ejecutable
 
@@ -111,7 +115,7 @@ Hay dos perfiles posibles (dev y prod), que solo afectan a como se generan los l
 2. Ejecuta el .jar con java:
 
   ```bash
-  java -jar bootstrap/target/bootstrap-1.2.0-SNAPSHOT.jar
+  java -jar bootstrap/target/bootstrap-1.2.0.jar
   ```
 
 ### Si no se tiene maven instalado, se puede usar el script Maven Wrapper incluido en el proyecto: **mvnw** (mvnw.cmd en windows)
@@ -134,15 +138,21 @@ El servicio expone un único **endpoint REST** para consultar precios:
 
 ### `GET /prices/applicable`
 
-Consulta el precio aplicable a un producto en una marca concreta, en una fecha y hora determinadas.
+Consulta el precio aplicable a un producto en una cadena específica, en una fecha y hora determinadas.
 
-### 🔸 Parámetros de query (obligatorios)
+### 🔸 Parámetros de entrada (obligatorios)
 
-| Parámetro        | Tipo   | Descripción                                                          | Ejemplo               |
-|------------------|--------|----------------------------------------------------------------------|-----------------------|
-| `applicationDate`| String | Fecha y hora de aplicación (formato `yyyy-MM-dd'T'HH:mm:ss`)         | `2020-06-14T10:00:00` |
-| `productId`      | Long   | Identificador del producto                                           | `35455`               |
-| `brandId`        | Long   | Identificador de la cadena (marca)                                   | `1`                   |
+| Parámetro        | Tipo          | Descripción                                                              | Ejemplo               |
+|------------------|---------------|--------------------------------------------------------------------------|-----------------------|
+| `applicationDate`| LocalDateTime | Fecha y hora de aplicación (formato ISO-8601: `yyyy-MM-dd'T'HH:mm:ss`)   | `2020-06-14T10:00:00` |
+| `productId`      | Long          | Identificador del producto                                               | `35455`               |
+| `brandId`        | Long          | Identificador de la cadena                                               | `1`                   |
+
+> ℹ️ **Nota sobre el formato de fecha**
+> Aunque en el enunciado se muestran las fechas con el formato `yyyy-MM-dd-HH.mm.ss`, en esta implementación se utiliza el formato **ISO-8601 estándar**:
+> `yyyy-MM-dd'T'HH:mm:ss`
+> Este formato es el que espera Spring Boot por defecto con `@DateTimeFormat(iso = ISO.DATE_TIME)`, y garantiza una mejor compatibilidad con herramientas como Swagger, Postman y curl.
+
 
 ### ✅ Ejemplo de petición exitosa con `curl`
 
@@ -175,7 +185,7 @@ curl -X GET "http://localhost:8080/prices/applicable?applicationDate=2020-06-14T
 ```json
 {
    "timestamp":"2025-06-14T22:55:54.394312385",
-   "message":"No se encontró un precio para el producto 35455, marca 2 en la fecha 2020-06-14T10:00",
+   "message":"No se encontró un precio para el producto 35455, cadena 2 en la fecha 2020-06-14T10:00",
    "error":"Not Found",
    "status":404}
 ```
@@ -263,19 +273,65 @@ contiene los tests de integración que validan el endpoint `/prices/applicable`.
 
 Los resultados esperados están documentados en el apartado anterior.
 
+#### Nota
+Esta sección se ha centrado en los tests de integración requeridos por el enunciado del ejercicio.
+Adicionalmente, se han implementado pruebas unitarias para las clases clave de la lógica de negocio,
+asegurando su correcto funcionamiento de forma aislada.
+
+---
 
 ## ✅ Criterios de evaluación
 
-- ✔️ **Arquitectura hexagonal** – Separación clara entre dominio, aplicación e infraestructura.
-- ✔️ **Diseño basado en DDD** – Uso correcto de entidades, puertos y casos de uso.
-- ✔️ **Principios SOLID** – Aplicación de SRP, DIP y otros principios clave.
-- ✔️ **Servicio REST bien estructurado** – Uso de `@RestController`, DTOs, `ResponseEntity`, etc.
-- ✔️ **Validación y formato de fechas** – Control robusto con `@DateTimeFormat` y validaciones de entrada.
-- ✔️ **Manejo de errores** – Respuestas 400 (Bad request), 404 cuando no se encuentra un precio aplicable, 500 error general.
-- ✔️ **Tests de integración completos** – Verificación de todos los escenarios funcionales requeridos.
-- ✔️ **Inicialización automática de datos** – Script `data.sql` cargado en arranque para entorno H2.
-- ✔️ **JavaDoc completo** – Documentación presente en las clases públicas clave.
-- ✔️ **Código limpio y modularizado** – Nomenclatura clara, estructura de paquetes coherente y uso correcto de Maven multi-módulo.
+- ✔️ **Entregar la prueba en un repositorio** – Proyecto publicado en GitHub.
+- ✔️ **Arquitectura Hexagonal** – Separación de responsabilidades entre dominio, aplicación, infraestructura y adaptadores, siguiendo el patrón Ports and Adapters.
+- ✔️ **Eficiencia de la extracción de datos** – Consulta optimizada por fecha, producto y cadena, usando `ORDER BY priority DESC` y limitando el resultado a la mejor coincidencia.
+- ✔️ **Pruebas de integración solicitadas en el enunciado** – Incluye los 5 tests requeridos y casos adicionales para errores, bordes y validaciones.
+- ✔️ **Claridad de código** – Código legible, organizado, con nomenclatura coherente y uso apropiado de JavaDoc.
+- ✔️ **Endpoint GET con buenas prácticas** – Uso de `@GetMapping`, `@RequestParam`, validaciones con `@DateTimeFormat`, y DTOs bien definidos.
+- ✔️ **Inicializar con los datos del ejemplo al arrancar la aplicación - H2** – Se cargan `schema.sql` y `data.sql` automáticamente en una base de datos en memoria H2.
+- ✔️ **Readme** – Documento completo con instrucciones de ejecución, pruebas, estructura del proyecto y criterios de evaluación cumplidos.
+- ✔️ **SOLID** – Aplicación de principios SOLID en servicios, entidades, puertos y adaptadores.
+- ✔️ **API REST** – Endpoint REST documentado, correctamente estructurado y documentado con OpenAPI/Swagger.
+- ✔️ **Eficiencia** – Lógica de negocio centrada y optimizada en la capa de dominio con retorno único y consultas eficientes.
+- ✔️ **Testing** – Tests de integración robustos y cubrimiento de múltiples escenarios de éxito y error.
+- ✔️ **Claridad de código** – Código autoexplicativo, modular, siguiendo buenas prácticas de diseño.
+- ✔️ **Control de versiones** – Proyecto versionado correctamente en Git (tags: `v1.0.0`, `v1.1.0`...), lista para futuras extensiones.
+- ✔️ **Configuración** – Uso de `application.properties` y `logback-spring.xml`, con perfiles separados (`dev`, `prod`) y logeo ajustable.
+- ✔️ **Devolver único resultado** – Retorna exclusivamente la tarifa aplicable con mayor prioridad.
+- ✔️ **Parámetros de entrada: fecha, id de cadena e id de producto** – Validados correctamente con mensajes de error claros.
+- ✔️ **Retorno: id producto, id cadena, tarifa a aplicar, fechas y precio** – Respuesta estructurada mediante DTO `PriceResponse`, cumpliendo con los requisitos.
+
+---
+
+## 📌 Control de versiones
+
+El proyecto sigue una estrategia de versionado basada en [SemVer](https://semver.org/lang/es/), combinada con el uso del sufijo `-SNAPSHOT` para indicar versiones en desarrollo.
+
+### Funcionamiento del versionado
+
+- Durante el desarrollo de una funcionalidad o iteración, se utiliza una versión con el sufijo `-SNAPSHOT`, por ejemplo: `1.1.0-SNAPSHOT`. Esto indica que el código está en evolución y aún no es una versión final.
+- Una vez que se completa y valida una versión, se **elimina el sufijo `-SNAPSHOT`** y se libera como versión **estable**, por ejemplo: `1.1.0`.
+- En ese momento, se crea una etiqueta (`tag`) en el repositorio Git con el número de versión correspondiente:
+  ```bash
+  git tag -a v1.1.0 -m "Versión estable 1.1.0"
+  git push origin v1.1.0
+
+- Después de publicar una versión estable (`1.1.0`), se actualiza el `pom.xml` para iniciar una nueva iteración de desarrollo con la siguiente versión: `1.2.0-SNAPSHOT`.
+- El número de versión se define y gestiona en los archivos `pom.xml` del proyecto.
+- En proyectos más grandes, este proceso puede automatizarse usando herramientas como `maven-release-plugin` junto con Jenkins.
+
+### 🕒 Historial de evolución
+
+| Versión            | Commit     | Descripción                                                                                      | Fecha       |
+|--------------------|------------|--------------------------------------------------------------------------------------------------|-------------|
+| `1.2.0-SNAPSHOT`   | `f90de7a`  | Mejora de la documentación y pequeña refactorización                                             | 18-jun-2025 |
+| `1.2.0-SNAPSHOT`   | `d1da892`  | Preparación de la siguiente iteración de desarrollo                                              | 18-jun-2025 |
+| `v1.1.0`           | `55e3bdb`  | Versión estable con documentación Swagger UI y API doc                                           | 18-jun-2025 |
+| `1.1.0-SNAPSHOT`   | `4121d2b`  | Info sobre Swagger UI y api-doc añadida                                                          | 17-jun-2025 |
+| `1.1.0-SNAPSHOT`   | `58d0bf9`  | Añadiendo documentación Swagger UI y API doc                                                     | 17-jun-2025 |
+| `1.1.0-SNAPSHOT`   | `0aff188`  | Cambio en README para mayor claridad                                                             | 17-jun-2025 |
+| `1.1.0-SNAPSHOT`   | `72352cb`  | Preparación de la siguiente iteración de desarrollo                                              | 17-jun-2025 |
+| `v1.0.0`           | `00742d2`  | Versión inicial estable: servicio REST funcional, pruebas completas, H2, arquitectura hexagonal  | 17-jun-2025 |
 
 ---
 
@@ -302,4 +358,5 @@ Entre las medidas que se plantearían podrían estar:
 ## 🧑‍💻 Autor y Fecha
 
 - **Autor**: Francisco Javier Dávila Foncuverta
-- **Fecha**: 16 de junio de 2025
+- **Fecha de creación**: 16 de junio de 2025
+- **Última actualización**: 18 de junio de 2025
