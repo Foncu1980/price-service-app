@@ -133,11 +133,11 @@ Consulta el precio aplicable a un producto en una marca concreta, en una fecha y
 
 ### 🔸 Parámetros de query (obligatorios)
 
-| Parámetro        | Tipo   | Descripción                                                  | Ejemplo               |
-|------------------|--------|--------------------------------------------------------------|-----------------------|
-| `applicationDate`| String | Fecha y hora de aplicación (formato `yyyy-MM-dd'T'HH:mm:ss`) | `2020-06-14T10:00:00` |
-| `productId`      | Long   | Identificador del producto                                   | `35455`               |
-| `brandId`        | Long   | Identificador de la marca                                    | `1`                   |
+| Parámetro        | Tipo   | Descripción                                                     | Ejemplo               |
+|------------------|--------|-----------------------------------------------------------------|-----------------------|
+| `applicationDate`| String | Fecha y hora de aplicación (formato `yyyy-MM-dd'T'HH:mm:ss`)    | `2020-06-14T10:00:00` |
+| `productId`      | Long   | Identificador del producto                                      | `35455`               |
+| `brandId`        | Long   | Identificador de la marca                                       | `1`                   |
 
 ### ✅ Ejemplo de petición exitosa con `curl`
 
@@ -289,7 +289,8 @@ Entre las medidas que se plantearían podrían estar:
 ## Otras mejoras:
 
 - **Añadir traceId o requestId en logs**
-- **Tener en cuenta métricas**
+- **Tener en cuenta métricas como el número de peticiones, peticiones correctas, erróneas, etc.**
+- **Considerar la integración de SonarQube como herramienta de análisis estático para asegurar la calidad del código.**
 
 ---
 

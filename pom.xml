@@ -9,7 +9,8 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>3.3.1</version> <relativePath/>
+    <version>3.3.1</version>
+    <relativePath/>
   </parent>
 
   <groupId>com.bcnc.ecommerce</groupId>
@@ -38,6 +39,7 @@
     <maven.dependency.plugin.version>3.8.1</maven.dependency.plugin.version>
     <mockito.version>5.17.0</mockito.version>
     <slf4j.version>2.0.17</slf4j.version>
+    <springdoc.version>2.5.0</springdoc.version>
     <spring.boot.version>3.3.1</spring.boot.version>
     <spring.data.commons.version>3.5.0</spring.data.commons.version>
     <spring.data.jpa.version>3.5.0</spring.data.jpa.version>
@@ -150,6 +152,11 @@
         <groupId>org.springframework.data</groupId>
         <artifactId>spring-data-jpa</artifactId>
         <version>${spring.data.jpa.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springdoc</groupId>
+        <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+        <version>${springdoc.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
