@@ -127,6 +127,47 @@ Hecho a modo de ejemplo.
 
 ---
 
+### 📊 Observabilidad y métricas
+El proyecto incluye un interceptor HTTP personalizado que recopila métricas básicas de las peticiones entrantes, utilizando Micrometer y compatible con Prometheus.
+
+Las métricas estarán disponibles en:
+
+- [📊 Prometheus Metrics](http://localhost:8080/actuator/prometheus)
+
+Se registran automáticamente los siguientes contadores:
+
+- **`http_requests_total{method, uri, status}`**
+  Registra cada petición, etiquetada por método (`GET`, `POST`, etc.), URI y código de estado HTTP (`200`, `404`, etc.).
+  📌 *Ejemplo:*
+  ```text
+  http_requests_total{method="GET",status="200",uri="/prices/applicable"} 11.0
+  http_requests_total{method="GET",status="404",uri="/prices/applicable"} 1.0
+  ```
+
+- **`http_requests_global_total`**
+  Contador agregado del total de peticiones gestionadas (exitosas y con error).
+  📌 *Ejemplo:*
+  ```text
+  http_requests_global_total 12.0
+  ```
+
+#### Exclusiones
+
+Para mantener la métrica limpia y centrada en el uso real de la API, se han excluido las siguientes rutas:
+
+ - /favicon.ico
+ - /swagger-ui
+ - /swagger-ui.html
+ - /v3/api-docs
+
+Estas métricas permiten una integración sencilla con herramientas como Prometheus y Grafana, facilitando
+la monitorización del comportamiento y la disponibilidad de la API en entornos de desarrollo y producción.
+
+#### 🔎 Nota
+Además de las métricas personalizadas implementadas en este proyecto, el endpoint de Prometheus expone automáticamente muchas otras métricas proporcionadas por Spring Boot Actuator y Micrometer (como uso de conexiones JDBC, tiempo de respuesta HTTP, etc.). Estas métricas estándar pueden ser útiles para el monitoreo general del sistema, pero no forman parte explícita de la lógica de este servicio.
+
+---
+
 ## 📡 Cómo Probar la Aplicación
 
 La documentación interactiva de la API estará disponible en:
@@ -273,7 +314,7 @@ contiene los tests de integración que validan el endpoint `/prices/applicable`.
 
 Los resultados esperados están documentados en el apartado anterior.
 
-#### Nota
+#### 🔎 Nota
 Esta sección se ha centrado en los tests de integración requeridos por el enunciado del ejercicio.
 Adicionalmente, se han implementado pruebas unitarias para las clases clave de la lógica de negocio,
 asegurando su correcto funcionamiento de forma aislada.
@@ -350,7 +391,6 @@ Entre las medidas que se plantearían podrían estar:
 ## Otras mejoras:
 
 - **Añadir traceId o requestId en logs**
-- **Tener en cuenta métricas como el número de peticiones, peticiones correctas, erróneas, etc.**
 - **Considerar la integración de SonarQube como herramienta de análisis estático para asegurar la calidad del código.**
 
 ---
