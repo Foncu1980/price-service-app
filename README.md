@@ -115,7 +115,7 @@ Hecho a modo de ejemplo.
 2. Ejecuta el .jar con java:
 
   ```bash
-  java -jar bootstrap/target/bootstrap-1.2.0.jar
+  java -jar bootstrap/target/bootstrap-1.2.1.jar
   ```
 
 ### Si no se tiene maven instalado, se puede usar el script Maven Wrapper incluido en el proyecto: **mvnw** (mvnw.cmd en windows)
