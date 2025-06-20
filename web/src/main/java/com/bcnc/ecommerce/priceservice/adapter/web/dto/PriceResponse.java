@@ -25,6 +25,9 @@ import java.time.LocalDateTime;
  * }
  * </pre>
  */
+@Schema(name = "PriceResponse", requiredProperties = {
+        "productId", "brandId", "priceList", "startDate", "endDate", "price", "curr"
+})
 public record PriceResponse(
         @Schema(description = "Identificador del producto", example = "35455")
         Long productId,
