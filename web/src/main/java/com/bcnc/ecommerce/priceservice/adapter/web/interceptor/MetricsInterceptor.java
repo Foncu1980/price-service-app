@@ -8,22 +8,25 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
-public class MetricsInterceptor implements HandlerInterceptor {
-
+public class MetricsInterceptor implements HandlerInterceptor
+{
     private final MeterRegistry meterRegistry;
 
-    public MetricsInterceptor(MeterRegistry meterRegistry) {
+    public MetricsInterceptor(MeterRegistry meterRegistry)
+    {
         this.meterRegistry = meterRegistry;
     }
 
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
+    {
         String uri = request.getRequestURI();
 
         // Ignorar rutas que no son funcionales
         if (uri.equals("/favicon.ico") ||
                 uri.startsWith("/swagger-ui") ||
-                uri.startsWith("/v3/api-docs")) {
+                uri.startsWith("/v3/api-docs"))
+        {
             return;
         }
 

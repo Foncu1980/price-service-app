@@ -32,18 +32,19 @@ class MetricsInterceptorTest {
     private static final String TAG_URI = "uri";
     private static final String TAG_STATUS = "status";
 
-
     private MeterRegistry meterRegistry;
     private MetricsInterceptor metricsInterceptor;
 
     @BeforeEach
-    void setup() {
+    void setup()
+    {
         meterRegistry = mock(MeterRegistry.class);
         metricsInterceptor = new MetricsInterceptor(meterRegistry);
     }
 
     @Test
-    void shouldIncrementCounterForNonExcludedUri() {
+    void shouldIncrementCounterForNonExcludedUri()
+    {
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
 
@@ -62,7 +63,8 @@ class MetricsInterceptorTest {
     }
 
     @Test
-    void shouldNotIncrementCounterForExcludedUri() {
+    void shouldNotIncrementCounterForExcludedUri()
+    {
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
 
@@ -77,7 +79,8 @@ class MetricsInterceptorTest {
 
     @ParameterizedTest
     @MethodSource("errorResponseParameters")
-    void shouldIncrementCounterForErrorResponse(int statusCode, String uri) {
+    void shouldIncrementCounterForErrorResponse(int statusCode, String uri)
+    {
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
 
@@ -95,7 +98,8 @@ class MetricsInterceptorTest {
         verify(mockCounter, times(2)).increment(); // global + specific
     }
 
-    private static Stream<Arguments> errorResponseParameters() {
+    private static Stream<Arguments> errorResponseParameters()
+    {
         return Stream.of(
                 Arguments.of(STATUS_400, URI_INVALID),
                 Arguments.of(STATUS_404, URI_NOT_FOUND),

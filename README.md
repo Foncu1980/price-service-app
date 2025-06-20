@@ -137,7 +137,7 @@ Las métricas estarán disponibles en:
 Se registran automáticamente los siguientes contadores:
 
 - **`http_requests_total{method, uri, status}`**
-  Registra cada petición, etiquetada por método (`GET`, `POST`, etc.), URI y código de estado HTTP (`200`, `404`, etc.).
+  Registra cada petición, etiquetada por método (`GET`, `POST`, etc.), URI y código de estado HTTP (`200`, `404`, `400`, `500`.).
   📌 *Ejemplo:*
   ```text
   http_requests_total{method="GET",status="200",uri="/prices/applicable"} 11.0
@@ -165,6 +165,46 @@ la monitorización del comportamiento y la disponibilidad de la API en entornos 
 
 #### 🔎 Nota
 Además de las métricas personalizadas implementadas en este proyecto, el endpoint de Prometheus expone automáticamente muchas otras métricas proporcionadas por Spring Boot Actuator y Micrometer (como uso de conexiones JDBC, tiempo de respuesta HTTP, etc.). Estas métricas estándar pueden ser útiles para el monitoreo general del sistema, pero no forman parte explícita de la lógica de este servicio.
+
+---
+
+### 🔐 Seguridad de la API
+
+La aplicación incorpora un filtro de autenticación basado en tokens Bearer para proteger el endpoint /prices/applicable.
+
+#### 🔑 ¿Cómo funciona?
+
+Cualquier solicitud a la API requiere el envío de un header Authorization con un token Bearer válido.
+
+Si no se incluye o el formato es incorrecto, se devuelve un error 401 Unauthorized en formato JSON, gestionado de forma centralizada.
+
+Las rutas relacionadas con Swagger UI, OpenAPI y Actuator están abiertas para facilitar el desarrollo y la monitorización.
+
+📘 Ejemplo de llamada autenticada
+
+```http
+GET /prices/applicable?applicationDate=2020-06-14T10:00:00&productId=35455&brandId=1
+Authorization: Bearer dummy-token
+```
+
+🐚 Ejemplo usando curl:
+
+```bash
+curl -H "Authorization: Bearer dummy-token" \
+     "http://localhost:8080/prices/applicable?applicationDate=2020-06-14T10:00:00&productId=35455&brandId=1"
+```
+
+🧪 Token dummy para desarrollo
+Durante el desarrollo, se usa token dummy fijo configurado en application.properties:
+
+```ini
+security.token=12345678
+```
+
+Esto permite probar la funcionalidad con una autenticación muy básica, ya que no hay ningun
+sistema de autenticación externo.
+
+El filtro de seguridad verifica que el token recibido coincida con el valor configurado.
 
 ---
 
@@ -376,22 +416,45 @@ El proyecto sigue una estrategia de versionado basada en [SemVer](https://semver
 
 ---
 
-## 🔐 Consideraciones de Seguridad (no implementadas en esta versión)
+## 🔐 Consideraciones de Seguridad
 
-Este proyecto ha sido desarrollado como un ejercicio técnico centrado en arquitectura, diseño y pruebas funcionales. Por tanto, no se han incorporado mecanismos de seguridad, pero se tendrían en cuenta para un entorno real.
-Entre las medidas que se plantearían podrían estar:
+Aunque este proyecto se ha desarrollado como un ejercicio técnico centrado en arquitectura, diseño y pruebas
+funcionales, se ha incorporado una simulación básica de autenticación mediante un filtro personalizado que valida
+un token Bearer fijo.
 
-- **Autenticación y autorización**: Integración con mecanismos como OAuth2, utilizando tokens JWT como formato habitual de autenticación.
-- **Rate limiting y control de acceso**: Para proteger el endpoint público de abusos o llamadas no autorizadas.
-- **Uso obligatorio de HTTPS**: Aunque esta aplicación está pensada para ejecutarse en local, en un entorno real se desplegaría detrás de un proxy o balanceador de carga que obligue al uso de HTTPS para proteger la confidencialidad e integridad del tráfico.
-- **Análisis de dependencias**: En un entorno real, se integraría un análisis automático de vulnerabilidades para garantizar que las librerías utilizadas estén actualizadas y libres de riesgos conocidos.
+Esta solución permite ilustrar de forma sencilla el control de acceso al endpoint principal sin depender de
+sistemas externos.
+
+En un entorno real, se aplicarían medidas de seguridad más robustas, tales como:
+
+- **Autenticación y autorización**: Uso de estándares como OAuth2, con tokens JWT firmados y validados por un
+servidor de autorización (Authorization Server). Esto permitiría una gestión segura y escalable de los accesos.
+- **Rate limiting y control de acceso**: Implementación de límites de peticiones (por IP, cliente o token) para evitar 
+abusos o ataques de denegación de servicio (DoS)
+- **Uso obligatorio de HTTPS**: Todas las comunicaciones deberían estar cifradas mediante HTTPS, protegidas por
+certificados válidos. En entornos reales, esto se logra mediante despliegue detrás de proxies inversos
+o balanceadores de carga que fuerzan HTTPS.
+- **Análisis de vulnerabilidades**: En un entorno real, se integraría un análisis automático de vulnerabilidades
+para garantizar que las librerías utilizadas estén actualizadas y libres de riesgos conocidos.
+- **Auditoría y trazabilidad**: Registro de intentos de acceso, tokens utilizados, errores y patrones sospechosos
+para facilitar el análisis forense y la monitorización.
 
 ---
 
-## Otras mejoras:
+## 🛠️ Otras mejoras
 
-- **Añadir traceId o requestId en logs**
-- **Considerar la integración de SonarQube como herramienta de análisis estático para asegurar la calidad del código.**
+- **Añadir `traceId` o `requestId` en logs**: para facilitar el seguimiento de peticiones y la trazabilidad en
+entornos distribuidos.
+- **Integrar SonarQube**: como herramienta de análisis estático para asegurar la calidad del código
+y detectar errores potenciales.
+- **Implementar caché en la lógica de precios**: mejorar el rendimiento en escenarios de alta concurrencia mediante
+caching de precios ya calculados (por ejemplo con Caffeine o Redis).
+- **Pipeline CI/CD**: automatizar el proceso de build, test y despliegue mediante herramientas como GitHub Actions,
+Jenkins o GitLab CI.
+- **Internacionalización**: preparar la API para devolver mensajes en distintos idiomas, especialmente útil si el
+producto tiene alcance internacional.
+- **Contenerización y despliegue en entornos cloud-native** Crear un `Dockerfile` y configuraciones para
+Kubernetes (Helm, Kustomize) con el objetivo de facilitar despliegues en plataformas cloud como AWS, Azure o GCP.
 
 ---
 
