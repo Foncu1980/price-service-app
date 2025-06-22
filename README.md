@@ -122,7 +122,7 @@ Sigue estos pasos para compilar y ejecutar la aplicación localmente:
    mvn spring-boot:run -pl bootstrap
    ```
   
-4. La aplicación se iniciará en http://localhost:8080 (puerto por defecto).
+4. La aplicación se iniciará en `http://localhost:8080/` (puerto por defecto).
 
 ### Alternativa para arrancar la aplicación
 

@@ -4,6 +4,14 @@ Historial de versiones del proyecto `price-service`.
 
 ---
 
+## [1.3.1] - 2025-06-23
+### 🐞 Corregido
+- Corrección menor en `README.md`: el enlace `http://localhost:8080` se mostraba como clicable, lo que podía llevar a errores al abrirlo en navegadores.
+
+✅ Esta versión reemplaza a `v1.3.0` como la última versión estable.
+
+---
+
 ## [1.3.0] - 2025-06-22
 ### ✨ Añadido
 - **Soporte de seguridad básica**: se añade un filtro personalizado que valida un token Bearer fijo (`12345678`) para simular autenticación.
@@ -17,7 +25,6 @@ Historial de versiones del proyecto `price-service`.
     - Autoría y fecha del proyecto.
     - Mejoras futuras propuestas.
 
-✅ Esta versión reemplaza a `v1.2.1` como la última versión estable.
 
 ---
 
