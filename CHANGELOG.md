@@ -4,9 +4,20 @@ Historial de versiones del proyecto `price-service`.
 
 ---
 
-## [1.3.0-SNAPSHOT] - En desarrollo
-### 🔧 Preparación
-- Preparada la siguiente iteración de desarrollo tras estabilizar la versión `1.2.1`.
+## [1.3.0] - 2025-06-22
+### ✨ Añadido
+- **Soporte de seguridad básica**: se añade un filtro personalizado que valida un token Bearer fijo (`12345678`) para simular autenticación.
+- **Integración con Swagger/OpenAPI**: configuración de seguridad en Swagger UI para incluir el token en las peticiones.
+
+### 📘 Documentación
+- Actualización del `README.md` con nuevas secciones:
+    - Consideraciones de seguridad.
+    - Ejemplos de autenticación con peticiones válidas y erróneas (`curl`).
+    - Historial de versiones.
+    - Autoría y fecha del proyecto.
+    - Mejoras futuras propuestas.
+
+✅ Esta versión reemplaza a `v1.2.1` como la última versión estable.
 
 ---
 
@@ -14,15 +25,13 @@ Historial de versiones del proyecto `price-service`.
 ### 🐞 Corregido
 - Fix en el `pom.xml` del módulo `config` que impedía la compilación de la versión estable `1.2.0`.
 
-✅ Esta versión es considerada **estable**.
-
 ---
 
 ## [1.2.0] - 2025-06-19
 ### ✨ Añadido
 - Métricas Prometheus para monitorización de peticiones (200, 400, 404, 500).
 - Módulo `config` para centralizar propiedades y configuración técnica.
-- Ejemplos detallados en el `README`, incluyendo uso de curl.
+- Ejemplos detallados en el `README.md`, incluyendo uso de curl.
 
 ### 🛠️ Mejorado
 - Refactorizaciones menores para mayor claridad.
