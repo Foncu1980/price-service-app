@@ -106,23 +106,34 @@ sistema de logs mediante logback-spring.xml. Esta separación se ha incluido a m
 
 Sigue estos pasos para compilar y ejecutar la aplicación localmente:
 
-1. Clona el repositorio:
+1. **Clonar o descargar el repositorio**
+
+- **Opción 1**: con Git
    ```bash
    git clone https://github.com/Foncu1980/price-service-app.git
    cd price-service-app
    ```
 
-2. Construye el proyecto (esto ejecutará todos los tests; añade -DskipTests para omitirlos):
+- **Opción 2**: descargar como ZIP
+
+  1. Ve a: https://github.com/Foncu1980/price-service-app
+  2. Haz clic en el botón verde “Code” (arriba a la derecha)
+  3. Selecciona “Download ZIP”
+  4. Extrae el archivo ZIP en tu ordenador y accede a la carpeta extraída
+
+- Dentro del botón **“Code”** también encontrarás otras opciones para clonar o descargar el repositorio (por HTTPS, o GitHub CLI).
+
+2. **Construye el proyecto** (esto ejecutará todos los tests; añade -DskipTests para omitirlos):
    ```bash
    mvn clean install
    ```
 
-3.  Ejecuta la aplicación desde el módulo de arranque (`bootstrap`):
+3.  **Ejecuta la aplicación desde el módulo de arranque (`bootstrap`)**:
    ```bash
    mvn spring-boot:run -pl bootstrap
    ```
   
-4. La aplicación se iniciará en `http://localhost:8080/` (puerto por defecto).
+4. **La aplicación se iniciará en `http://localhost:8080/` (puerto por defecto)**.
 
 ### Alternativa para arrancar la aplicación
 
@@ -135,7 +146,7 @@ Sigue estos pasos para compilar y ejecutar la aplicación localmente:
 2. Ejecuta el JAR generado con Java:
 
   ```bash
-  java -jar bootstrap/target/bootstrap-1.3.0.jar
+  java -jar bootstrap/target/bootstrap-1.3.2.jar
   ```
 
 ### Si no tienes Maven instalado, puedes utilizar el Maven Wrapper incluido en el proyecto:
@@ -429,7 +440,9 @@ por ejemplo: `1.1.0`.
 
 | Versión          | Commit     | Descripción                                                                                     | Fecha       |
 |------------------|------------|-------------------------------------------------------------------------------------------------|-------------|
-| `1.3.0`          | `d3df96a`  | Versión estable v1.3.0: soporte de autenticación básica y actualización de documentación        | 22-jun-2025 |
+| `1.3.2`          | `e9a9dba`  | Hotfix 1.3.2: Corrección de la version en los archivos pom.xml y actualización de documentación | 23-jun-2025 |
+| `1.3.1`          | `86c7829`  | Hotfix 1.3.1: Corrección menor en documentación                                                 | 22-jun-2025 |
+| `1.3.0`          | `ae052b0`  | Versión estable v1.3.0: soporte de autenticación básica y actualización de documentación        | 22-jun-2025 |
 | `1.3.0-SNAPSHOT` | `03c3dcd`  | Añade soporte a Swagger para la autenticación con el token                                      | 20-jun-2025 |
 | `1.3.0-SNAPSHOT` | `c403843`  | Añadida seguridad básica con autenticación tipo Bearer (JWT simulado)                           | 20-jun-2025 |
 | `1.3.0-SNAPSHOT` | `6f11ddb`  | Preparación de la siguiente iteración de desarrollo                                             | 19-jun-2025 |
