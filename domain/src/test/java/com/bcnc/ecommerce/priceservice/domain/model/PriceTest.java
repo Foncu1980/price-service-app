@@ -43,6 +43,31 @@ class PriceTest
     }
 
     @Test
+    @DisplayName("Equals devuelve false si cambia el precio")
+    void testEqualsReturnsFalseForDifferentPrice() {
+        LocalDateTime start = LocalDateTime.of(2020, 6, 14, 0, 0);
+        LocalDateTime end = LocalDateTime.of(2020, 6, 14, 18, 30);
+
+        Price price1 = new Price(1L, start, end, 2, 35455L, 1, new BigDecimal("25.45"), "EUR");
+        Price price2 = new Price(1L, start, end, 2, 35455L, 1, new BigDecimal("30.00"), "EUR");
+
+        assertNotEquals(price1, price2);
+    }
+
+
+    @Test
+    @DisplayName("Equals devuelve false si se compara con null")
+    void testEqualsWithNull() {
+        LocalDateTime start = LocalDateTime.of(2020, 6, 14, 0, 0);
+        LocalDateTime end = LocalDateTime.of(2020, 6, 14, 18, 30);
+
+        Price price = new Price(1L, start, end, 2, 35455L, 1, new BigDecimal("25.45"), "EUR");
+
+        assertNotEquals(null, price);
+    }
+
+
+    @Test
     @DisplayName("toString genera una representación legible con todos los campos clave")
     void testToString()
     {
@@ -63,5 +88,62 @@ class PriceTest
                 () -> assertTrue(output.contains("price=25.45")),
                 () -> assertTrue(output.contains("curr='EUR'"))
         );
+    }
+
+    @Test
+    @DisplayName("Lanza excepción si el precio es negativo")
+    void shouldThrowExceptionForNegativePrice() {
+        LocalDateTime start = LocalDateTime.now();
+        LocalDateTime end = start.plusHours(1);
+        assertThrows(IllegalArgumentException.class, () ->
+                new Price(1L, start, end, 1, 100L, 1, new BigDecimal("-1.00"), "EUR")
+        );
+    }
+
+    @Test
+    @DisplayName("Lanza excepción si fecha de fin es anterior a la de inicio")
+    void shouldThrowExceptionForInvalidDateRange() {
+        LocalDateTime start = LocalDateTime.now();
+        LocalDateTime end = start.minusHours(1);
+        assertThrows(IllegalArgumentException.class, () ->
+                new Price(1L, start, end, 1, 100L, 1, new BigDecimal("10.00"), "EUR")
+        );
+    }
+
+    @Test
+    @DisplayName("Lanza excepción si el código de moneda está en blanco")
+    void shouldThrowExceptionForEmptyCurrency() {
+        LocalDateTime start = LocalDateTime.now();
+        LocalDateTime end = start.plusHours(1);
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                new Price(1L, start, end, 1, 100L, 1, new BigDecimal("10.00"), " ")
+        );
+
+        assertTrue(exception.getMessage().contains("curr no puede estar vacío"));
+    }
+
+
+    @Test
+    @DisplayName("Lanza excepción si startDate es nulo")
+    void shouldThrowExceptionWhenStartDateIsNull() {
+        LocalDateTime end = LocalDateTime.now().plusHours(1);
+
+        assertThrows(NullPointerException.class, () ->
+                new Price(1L, null, end, 1, 100L, 1, new BigDecimal("10.00"), "EUR")
+        );
+    }
+
+    @Test
+    @DisplayName("Lanza excepción si brandId es negativo")
+    void shouldThrowExceptionForNegativeBrandId() {
+        LocalDateTime start = LocalDateTime.now();
+        LocalDateTime end = start.plusHours(1);
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                new Price(-1L, start, end, 1, 100L, 1, new BigDecimal("10.00"), "EUR")
+        );
+
+        assertTrue(exception.getMessage().contains("brandId no puede ser negativo"));
     }
 }

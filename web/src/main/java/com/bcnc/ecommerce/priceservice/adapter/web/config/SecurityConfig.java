@@ -1,7 +1,7 @@
 package com.bcnc.ecommerce.priceservice.adapter.web.config;
 
 import com.bcnc.ecommerce.priceservice.adapter.web.security.TokenAuthenticationFilter;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -12,25 +12,34 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@EnableConfigurationProperties(SecurityProperties.class)
 public class SecurityConfig {
 
-    @Value("${security.token}")
-    private String token;
+    private final SecurityProperties properties;
+
+    public SecurityConfig(SecurityProperties properties) {
+        this.properties = properties;
+    }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception
-    {
+    public TokenAuthenticationFilter tokenAuthenticationFilter() {
+        return new TokenAuthenticationFilter(properties.getToken());
+    }
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/actuator/**",
-                                "/swagger-ui/**",
-                                "/swagger-ui.html",
-                                "/v3/api-docs/**").permitAll()
+                        .requestMatchers(PUBLIC_PATHS).permitAll()
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(new TokenAuthenticationFilter(token), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
+
+    private static final String[] PUBLIC_PATHS = {
+            "/actuator/**", "/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**"
+    };
 }

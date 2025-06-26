@@ -14,8 +14,10 @@ import java.util.List;
 /**
  * Repositorio JPA para acceder a la entidad {@link PriceEntity}.
  *
- * <p>Define una consulta personalizada para obtener la tarifa aplicable con mayor prioridad
+ * <p>Define una consulta personalizada para recuperar todas las tarifas aplicables
  * en función del producto, la cadena y la fecha de aplicación.</p>
+ *
+ * <p>La lógica de selección del precio final se realiza en la capa de dominio.</p>
  */
 @Repository
 public interface PriceJpaRepository extends JpaRepository<PriceEntity, Long>

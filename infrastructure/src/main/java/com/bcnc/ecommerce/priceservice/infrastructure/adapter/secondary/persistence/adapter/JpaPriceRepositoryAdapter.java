@@ -38,13 +38,15 @@ public class JpaPriceRepositoryAdapter implements PriceRepository
     }
 
     /**
-     * Recupera el precio con mayor prioridad que aplica al producto y cadena especificados
+     * Recupera todas las tarifas que aplican al producto y cadena especificados
      * en la fecha proporcionada.
+     *
+     * <p>La lógica para seleccionar el precio final más adecuado se aplica en el dominio.</p>
      *
      * @param applicationDate fecha de aplicación para la búsqueda.
      * @param productId       identificador del producto.
      * @param brandId         identificador de la cadena.
-     * @return un {@link Price} aplicable, si existe; de lo contrario, vacío.
+     * @return lista de {@link Price} aplicables.
      */
     @Override
     public List<Price> findApplicablePrices(LocalDateTime applicationDate,

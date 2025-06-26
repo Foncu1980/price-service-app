@@ -17,6 +17,8 @@ public class PriceMapper
     /**
      * Convierte una entidad {@link PriceEntity} en un objeto del dominio {@link Price}.
      *
+     * <p>Este método realiza una conversión directa, sin aplicar lógica de negocio.</p>
+     *
      * @param entity entidad JPA a convertir.
      * @return objeto del dominio equivalente.
      */

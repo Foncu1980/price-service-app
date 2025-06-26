@@ -1,5 +1,7 @@
 package com.bcnc.ecommerce.priceservice.application;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -80,11 +82,48 @@ class PriceServiceImplTest {
         when(priceSelectionService.selectApplicablePrice(emptyList, date))
                 .thenReturn(Optional.empty());
 
-        assertThrows(PriceNotFoundException.class, () ->
+        Exception exception = assertThrows(PriceNotFoundException.class, () ->
                 priceService.findApplicablePrice(date, productId, brandId)
+        );
+
+        String message = exception.getMessage();
+
+        assertAll(
+                () -> assertTrue(message.contains("No se encontró un precio para el producto")),
+                () -> assertTrue(message.contains(productId.toString())),
+                () -> assertTrue(message.contains(brandId.toString())),
+                () -> assertTrue(message.contains(date.toString()))
         );
 
         verify(priceRepository, times(1)).findApplicablePrices(date, productId, brandId);
         verify(priceSelectionService, times(1)).selectApplicablePrice(emptyList, date);
+    }
+
+    @DisplayName("Selecciona correctamente el precio con mayor prioridad")
+    @Test
+    void shouldSelectPriceWithHighestPriority() {
+        Long productId = 35455L;
+        Long brandId = 1L;
+        LocalDateTime date = LocalDateTime.of(2020, 6, 14, 18, 0);
+
+        Price lowPriority = new Price(brandId, date.minusHours(1), date.plusHours(2), 1, productId, 0,
+                new BigDecimal("30.00"), "EUR");
+        Price highPriority = new Price(brandId, date.minusHours(2), date.plusHours(1), 2, productId, 1,
+                new BigDecimal("50.00"), "EUR");
+
+        List<Price> prices = List.of(lowPriority, highPriority);
+
+        when(priceRepository.findApplicablePrices(date, productId, brandId))
+                .thenReturn(prices);
+        when(priceSelectionService.selectApplicablePrice(prices, date))
+                .thenReturn(Optional.of(highPriority));
+
+        Price result = priceService.findApplicablePrice(date, productId, brandId);
+
+        assertEquals(highPriority.getPrice(), result.getPrice());
+        assertEquals(1, result.getPriority());
+
+        verify(priceRepository).findApplicablePrices(date, productId, brandId);
+        verify(priceSelectionService).selectApplicablePrice(prices, date);
     }
 }

@@ -42,6 +42,25 @@ class PriceMapperTest
     }
 
     @Test
+    @DisplayName("Mapeo de PriceEntity con campos nulos a Price debe lanzar NullPointerException")
+    void testToDomainWithNullFields() {
+        PriceEntity entityWithNulls = new PriceEntity();
+        // Solo seteamos algunos campos para simular nulos en otros
+        entityWithNulls.setBrandId(1L);
+        entityWithNulls.setProductId(123L);
+        // startDate, endDate, priceList, priority, price, curr serán nulos
+
+        // Esperamos que el constructor de Price lance IllegalArgumentException
+        // debido a los campos nulos que no son permitidos por el dominio.
+        NullPointerException thrown = assertThrows(NullPointerException.class, () -> {
+            mapper.toDomain(entityWithNulls);
+        });
+
+        // Opcional: verificar el mensaje de la excepción si es relevante
+        assertTrue(thrown.getMessage().contains("startDate no puede ser nulo"));
+    }
+
+    @Test
     @DisplayName("Mapeo correcto de Price a PriceEntity")
     void testToEntity()
     {
@@ -61,5 +80,19 @@ class PriceMapperTest
         assertEquals(price.getPriority(), entity.getPriority());
         assertEquals(price.getPrice(), entity.getPrice());
         assertEquals(price.getCurr(), entity.getCurr());
+    }
+
+    @Test
+    @DisplayName("Mapeo de Price a PriceEntity con BigDecimal cero")
+    void testToEntityWithZeroPrice() {
+        Price price = new Price(1L,
+                LocalDateTime.of(2020, 1, 1, 0, 0),
+                LocalDateTime.of(2020, 1, 2, 0, 0),
+                1, 123L, 0, BigDecimal.ZERO, "EUR");
+
+        PriceEntity entity = mapper.toEntity(price);
+
+        assertNotNull(entity);
+        assertEquals(BigDecimal.ZERO, entity.getPrice());
     }
 }

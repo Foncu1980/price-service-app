@@ -4,6 +4,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,6 +17,12 @@ import java.util.Collections;
 
 public class TokenAuthenticationFilter extends OncePerRequestFilter
 {
+    private static final Logger logger = LoggerFactory.getLogger(TokenAuthenticationFilter.class);
+
+    private static final String[] PUBLIC_PATHS = {
+            "/actuator", "/swagger-ui", "/v3/api-docs"
+    };
+
     private final String expectedToken;
 
     public TokenAuthenticationFilter(String expectedToken)
@@ -31,25 +39,27 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter
         String path = request.getRequestURI();
 
         // Rutas públicas que se deben permitir sin token
-        if (path.startsWith("/actuator")
-                || path.startsWith("/swagger-ui")
-                || path.startsWith("/v3/api-docs")) {
+        if (isPublicPath(path)) {
             filterChain.doFilter(request, response);
             return;
         }
 
         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        if (authHeader == null || !authHeader.equals("Bearer " + expectedToken))
-        {
+        String bearerToken = "Bearer " + expectedToken;
+        if (authHeader == null || !authHeader.trim().equalsIgnoreCase(bearerToken)) {
+            logger.warn("Unauthorized access attempt to '{}' from IP {}", path, request.getRemoteAddr());
+
+            response.setHeader(HttpHeaders.WWW_AUTHENTICATE, "Bearer realm=\"price-service\"");
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType("application/json");
             response.getWriter().write("""
-        {
-          "error": "Unauthorized",
-          "message": "Invalid or missing Bearer token"
-        }
-        """);
+            {
+                "error": "Unauthorized",
+                "message": "Invalid or missing Bearer token"
+            }
+            """);
+            response.getWriter().close();
             return;
         }
 
@@ -59,5 +69,14 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         filterChain.doFilter(request, response);
+    }
+
+    private boolean isPublicPath(String path) {
+        for (String prefix : PUBLIC_PATHS) {
+            if (path.startsWith(prefix)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
