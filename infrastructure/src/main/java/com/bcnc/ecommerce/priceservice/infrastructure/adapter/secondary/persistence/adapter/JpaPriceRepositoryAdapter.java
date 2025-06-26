@@ -4,11 +4,10 @@ import com.bcnc.ecommerce.priceservice.domain.model.Price;
 import com.bcnc.ecommerce.priceservice.domain.repository.PriceRepository;
 import com.bcnc.ecommerce.priceservice.infrastructure.adapter.secondary.persistence.mapper.PriceMapper;
 import com.bcnc.ecommerce.priceservice.infrastructure.adapter.secondary.persistence.repository.PriceJpaRepository;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.List;
 
 /**
  * Adaptador de infraestructura que implementa el repositorio de dominio {@link PriceRepository}
@@ -48,14 +47,14 @@ public class JpaPriceRepositoryAdapter implements PriceRepository
      * @return un {@link Price} aplicable, si existe; de lo contrario, vacío.
      */
     @Override
-    public Optional<Price> findTopPriceByProductIdAndBrandIdAndDate(LocalDateTime applicationDate,
-                                                                    Long productId,
-                                                                    Long brandId)
+    public List<Price> findApplicablePrices(LocalDateTime applicationDate,
+                                                                Long productId,
+                                                                Long brandId)
     {
         return priceJpaRepository
-                .findTopApplicablePrice(applicationDate, productId, brandId, PageRequest.of(0, 1))
+                .findApplicablePrices(applicationDate, productId, brandId)
                 .stream()
-                .findFirst()
-                .map(priceMapper::toDomain);
+                .map(priceMapper::toDomain)
+                .toList();
     }
 }

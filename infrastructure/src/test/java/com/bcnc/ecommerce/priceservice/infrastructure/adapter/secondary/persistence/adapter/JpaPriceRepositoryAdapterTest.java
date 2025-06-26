@@ -7,8 +7,6 @@ import com.bcnc.ecommerce.priceservice.infrastructure.adapter.secondary.persiste
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
-import org.springframework.data.domain.PageRequest;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -43,16 +41,16 @@ class JpaPriceRepositoryAdapterTest
         PriceEntity entity = new PriceEntity();
         Price price = new Price(productId, date, date.plusHours(2), 2, productId, 1, new BigDecimal("25.45"), "EUR");
 
-        when(priceJpaRepository.findTopApplicablePrice(eq(date), eq(productId), eq(brandId), ArgumentMatchers.any(PageRequest.class)))
+        when(priceJpaRepository.findApplicablePrices(eq(date), eq(productId), eq(brandId)))
                 .thenReturn(List.of(entity));
         when(priceMapper.toDomain(entity)).thenReturn(price);
 
-        Optional<Price> result = adapter.findTopPriceByProductIdAndBrandIdAndDate(date, productId, brandId);
+        List<Price> result = adapter.findApplicablePrices(date, productId, brandId);
 
-        assertTrue(result.isPresent());
-        assertEquals(price, result.get());
+        assertEquals(1, result.size());
+        assertEquals(price, result.get(0));
 
-        verify(priceJpaRepository, times(1)).findTopApplicablePrice(eq(date), eq(productId), eq(brandId),ArgumentMatchers.any(PageRequest.class));
+        verify(priceJpaRepository, times(1)).findApplicablePrices(eq(date), eq(productId), eq(brandId));
         verify(priceMapper, times(1)).toDomain(entity);
     }
 
@@ -64,13 +62,14 @@ class JpaPriceRepositoryAdapterTest
         Long brandId = 1L;
         LocalDateTime date = LocalDateTime.of(2020, 6, 13, 10, 0);
 
-        when(priceJpaRepository.findTopApplicablePrice(eq(date), eq(productId), eq(brandId), ArgumentMatchers.any(PageRequest.class)))
+        when(priceJpaRepository.findApplicablePrices(eq(date), eq(productId), eq(brandId)))
                 .thenReturn(List.of());
 
-        Optional<Price> result = adapter.findTopPriceByProductIdAndBrandIdAndDate(date, productId, brandId);
+        List<Price> result = adapter.findApplicablePrices(date, productId, brandId);
 
-        assertFalse(result.isPresent());
-        verify(priceJpaRepository, times(1)).findTopApplicablePrice(eq(date), eq(productId), eq(brandId), ArgumentMatchers.any(PageRequest.class));
+        assertTrue(result.isEmpty());
+
+        verify(priceJpaRepository, times(1)).findApplicablePrices(eq(date), eq(productId), eq(brandId));
         verify(priceMapper, never()).toDomain(any());
     }
 }

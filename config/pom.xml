@@ -20,6 +20,12 @@
     <!-- Dependencias necesarias para que Spring detecte la clase de configuración
          y para usar las anotaciones de OpenAPI -->
     <dependencies>
+        <dependency>
+            <groupId>com.bcnc.ecommerce</groupId>
+            <artifactId>domain</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
         <!-- Spring Boot básico (Component Scan, @Configuration, etc.) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

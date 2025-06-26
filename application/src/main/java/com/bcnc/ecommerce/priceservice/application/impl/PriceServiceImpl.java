@@ -6,6 +6,8 @@ import com.bcnc.ecommerce.priceservice.domain.model.Price;
 // Interfaz del puerto de salida hacia la infraestructura de persistencia
 import com.bcnc.ecommerce.priceservice.domain.repository.PriceRepository;
 
+import com.bcnc.ecommerce.priceservice.domain.service.PriceSelectionService;
+import java.util.List;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,13 +15,11 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDateTime;
 
 /**
- * Implementación del servicio de aplicación {@link PriceService} que
- * se encarga de recuperar el precio aplicable para un producto de una cadena
+ * Caso de uso de aplicación que recupera el precio aplicable para un producto y cadena
  * en una fecha determinada.
- *
  * <p>
- * Este servicio actúa como adaptador de entrada (caso de uso), delegando
- * la lógica de recuperación al puerto de salida {@link PriceRepository}.
+ * Orquesta el acceso a la infraestructura (repositorio) y la aplicación de la lógica de negocio
+ * (selección por prioridad) definida en el dominio.
  * </p>
  */
 @Service
@@ -30,31 +30,41 @@ public class PriceServiceImpl implements PriceService
     /** Puerto de salida: repositorio de dominio inyectado desde la infraestructura */
     private final PriceRepository priceRepository;
 
+    /** Servicio de dominio que aplica las reglas de selección */
+    private final PriceSelectionService priceSelectionService;
+
     /**
      * Constructor con inyección del repositorio de precios.
      *
-     * @param priceRepository puerto de salida que permite acceder a precios desde la infraestructura
+     * @param priceRepository       puerto de salida que permite acceder a precios desde la infraestructura.
+     * @param priceSelectionService servicio de dominio que aplica la lógica de negocio de selección.
      */
-    public PriceServiceImpl(PriceRepository priceRepository)
+    public PriceServiceImpl(PriceRepository priceRepository, PriceSelectionService priceSelectionService)
     {
         this.priceRepository = priceRepository;
+        this.priceSelectionService = priceSelectionService;
     }
 
     /**
-     * Recupera el precio más prioritario aplicable a un producto de una cadena en una fecha dada.
+     * Recupera el precio más prioritario aplicable a un producto y cadena en una fecha dada.
      *
-     * @param applicationDate Fecha de aplicación del precio
-     * @param productId ID del producto
-     * @param brandId ID de la cadena
-     * @return Precio aplicable
-     * @throws PriceNotFoundException si no existe ninguna tarifa válida para los parámetros indicados
+     * @param applicationDate fecha de aplicación del precio.
+     * @param productId       ID del producto.
+     * @param brandId         ID de la cadena.
+     * @return precio aplicable.
+     * @throws PriceNotFoundException si no existe ninguna tarifa válida para los parámetros indicados.
      */
     @Override
     public Price findApplicablePrice(LocalDateTime applicationDate, Long productId, Long brandId)
     {
         LOG.info("Buscando precio para productId={}, brandId={}, applicationDate={}", productId, brandId, applicationDate);
-        Price price = priceRepository
-                .findTopPriceByProductIdAndBrandIdAndDate(applicationDate, productId, brandId)
+
+        // 1. Obtener los precios candidatos de la infraestructura a través del puerto
+        List<Price> candidatePrices = priceRepository.findApplicablePrices(applicationDate, productId, brandId);
+
+        // 2. Aplicar la lógica de negocio del dominio para seleccionar el precio
+        Price price = priceSelectionService
+                .selectApplicablePrice(candidatePrices, applicationDate)
                 .orElseThrow(() -> {
                     LOG.warn("Precio no encontrado para productId={}, brandId={}, applicationDate={}", productId, brandId, applicationDate);
                     return new PriceNotFoundException(productId, brandId, applicationDate);

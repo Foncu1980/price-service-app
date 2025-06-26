@@ -29,7 +29,6 @@ public interface PriceJpaRepository extends JpaRepository<PriceEntity, Long>
      * @param applicationDate  fecha en la que debe aplicarse la tarifa.
      * @param productId        identificador del producto.
      * @param brandId          identificador de la cadena.
-     * @param pageable         objeto para limitar y ordenar los resultados.
      * @return lista de tarifas aplicables ordenadas por prioridad (de mayor a menor).
      */
     @Query("""
@@ -37,11 +36,9 @@ public interface PriceJpaRepository extends JpaRepository<PriceEntity, Long>
     WHERE p.productId = :productId
       AND p.brandId = :brandId
       AND :applicationDate BETWEEN p.startDate AND p.endDate
-    ORDER BY p.priority DESC
 """)
-    List<PriceEntity> findTopApplicablePrice(
+    List<PriceEntity> findApplicablePrices(
             @Param("applicationDate") LocalDateTime applicationDate,
             @Param("productId") Long productId,
-            @Param("brandId") Long brandId,
-            Pageable pageable);
+            @Param("brandId") Long brandId);
 }
