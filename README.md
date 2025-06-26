@@ -146,7 +146,7 @@ Sigue estos pasos para compilar y ejecutar la aplicación localmente:
 2. Ejecuta el JAR generado con Java:
 
   ```bash
-  java -jar bootstrap/target/bootstrap-1.3.2.jar
+  java -jar bootstrap/target/bootstrap-1.4.0.jar
   ```
 
 ### Si no tienes Maven instalado, puedes utilizar el Maven Wrapper incluido en el proyecto:
@@ -440,6 +440,7 @@ por ejemplo: `1.1.0`.
 
 | Versión          | Commit     | Descripción                                                                                     | Fecha       |
 |------------------|------------|-------------------------------------------------------------------------------------------------|-------------|
+| `1.4.0-SNAPSHOT` | `e26b77d`  | Preparación de la siguiente iteración de desarrollo                                             | 19-jun-2025 |
 | `1.3.2`          | `e9a9dba`  | Hotfix 1.3.2: Corrección de la version en los archivos pom.xml y actualización de documentación | 23-jun-2025 |
 | `1.3.1`          | `86c7829`  | Hotfix 1.3.1: Corrección menor en documentación                                                 | 22-jun-2025 |
 | `1.3.0`          | `ae052b0`  | Versión estable v1.3.0: soporte de autenticación básica y actualización de documentación        | 22-jun-2025 |

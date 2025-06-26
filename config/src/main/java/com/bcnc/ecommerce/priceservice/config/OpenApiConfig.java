@@ -21,7 +21,7 @@ import org.springframework.context.annotation.Configuration;
 @OpenAPIDefinition(
         info = @Info(
                 title = "Price Service API",
-                version = "1.3.2",
+                version = "1.4.0",
                 description = "API REST para calcular el precio aplicable a un producto en función de la fecha, el identificador del producto y la cadena.",
                 contact = @Contact( // Información de contacto
                         name = "Francisco Javier Dávila Foncuverta",
