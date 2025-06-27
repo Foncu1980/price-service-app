@@ -4,6 +4,24 @@ Historial de versiones del proyecto `price-service`.
 
 ---
 
+## [1.4.0] - 2025-06-27
+### ✨ Añadido
+- Servicio de dominio PriceSelectionService que encapsula la lógica de negocio de selección de precios.
+- Índice en la base de datos para mejorar la eficiencia de búsquedas por producto, marca, fechas y prioridad.
+- Creación de nuevos test unitarios para clases que aún no tenían cobertura.
+- Corrección de vulnerabilidades.
+
+### 🛠️ Mejorado
+- Refactorización de la lógica de negocio (PriceNotFoundException) trasladándola de application a domain.
+- Revisión de código y estilo para cumplir estándares: uso de final, mejoras de claridad y simplificación.
+- Ampliación de cobertura en pruebas unitarias existentes.
+
+### 📘 Documentación
+- Javadoc añadido o completado en entidades, servicios, configuraciones e interceptores.
+- Comentarios mejorados para facilitar la comprensión del código y las pruebas.
+
+---
+
 ## [1.3.2] - 2025-06-22
 ### 🐞 Corregido
 - Se corrigió la versión en los archivos pom.xml para reflejar correctamente la numeración del proyecto.

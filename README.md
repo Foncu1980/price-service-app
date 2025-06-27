@@ -438,27 +438,32 @@ por ejemplo: `1.1.0`.
 
 ### 🕒 Historial de evolución
 
-| Versión          | Commit     | Descripción                                                                                     | Fecha       |
-|------------------|------------|-------------------------------------------------------------------------------------------------|-------------|
-| `1.4.0-SNAPSHOT` | `e26b77d`  | Preparación de la siguiente iteración de desarrollo                                             | 19-jun-2025 |
-| `1.3.2`          | `e9a9dba`  | Hotfix 1.3.2: Corrección de la version en los archivos pom.xml y actualización de documentación | 23-jun-2025 |
-| `1.3.1`          | `86c7829`  | Hotfix 1.3.1: Corrección menor en documentación                                                 | 22-jun-2025 |
-| `1.3.0`          | `ae052b0`  | Versión estable v1.3.0: soporte de autenticación básica y actualización de documentación        | 22-jun-2025 |
-| `1.3.0-SNAPSHOT` | `03c3dcd`  | Añade soporte a Swagger para la autenticación con el token                                      | 20-jun-2025 |
-| `1.3.0-SNAPSHOT` | `c403843`  | Añadida seguridad básica con autenticación tipo Bearer (JWT simulado)                           | 20-jun-2025 |
-| `1.3.0-SNAPSHOT` | `6f11ddb`  | Preparación de la siguiente iteración de desarrollo                                             | 19-jun-2025 |
-| **`v1.2.1`**     | `0e40d98`  | Fix: error en la configuración del `pom.xml`. Versión estable 1.2.1                             | 19-jun-2025 |
-| `v1.2.0`         | `fde4eac`  | Versión estable 1.2.0 con mejoras en documentación y nuevas métricas                            | 19-jun-2025 |
-| `1.2.0-SNAPSHOT` | `950c73d`  | Se añaden métricas, se actualiza el README y pequeñas mejoras                                   | 18-jun-2025 |
-| `1.2.0-SNAPSHOT` | `5cca883`  | Añadido módulo de configuración para control sobre la documentación. Pequeñas mejoras           | 18-jun-2025 |
-| `1.2.0-SNAPSHOT` | `c81cebe`  | Mejora de la documentación y pequeña refactorización                                            | 18-jun-2025 |
-| `1.2.0-SNAPSHOT` | `cf8f10c`  | Preparación de la siguiente iteración de desarrollo                                             | 18-jun-2025 |
-| **`v1.1.0`**     | `773c553`  | Versión estable con documentación Swagger UI y API doc                                          | 17-jun-2025 |
-| `1.1.0-SNAPSHOT` | `4d5a6b4`  | Info sobre Swagger UI y api-doc añadida en el README                                            | 17-jun-2025 |
-| `1.1.0-SNAPSHOT` | `58d0bf9`  | Añadiendo documentación Swagger UI y API doc                                                    | 17-jun-2025 |
-| `1.1.0-SNAPSHOT` | `0aff188`  | Cambio en README para mayor claridad                                                            | 17-jun-2025 |
-| `1.1.0-SNAPSHOT` | `72352cb`  | Preparación de la siguiente iteración de desarrollo                                             | 17-jun-2025 |
-| **`v1.0.0`**     | `00742d2`  | Versión inicial estable: servicio REST funcional, pruebas completas, H2, arquitectura hexagonal | 17-jun-2025 |
+| Versión          | Commit     | Descripción                                                                                          | Fecha       |
+|------------------|------------|------------------------------------------------------------------------------------------------------|-------------|
+| **`1.4.0`**      | `0f56507`  | Versión estable v1.4.0: Mejoras de arquitectura, cobertura de tests y estilo de código/documentación | 27-jun-2025 |
+| `1.4.0-SNAPSHOT` | `9789bf2`  | Añade indice a la BD, mejora unit tests y corrige estilo                                             | 27-jun-2025 |
+| `1.4.0-SNAPSHOT` | `a57b0fe`  | Mejora de estilo, javadoc, etc. Se mueve excepcion a domini                                          | 27-jun-2025 |
+| `1.4.0-SNAPSHOT` | `2af5394`  | Mejora y creación de nuevos test unitarios. Pequeñas mejoras de código                               | 26-jun-2025 |
+| `1.4.0-SNAPSHOT` | `7decff1`  | Mejora de la capa de dominio. Añadido servicio de dominio                                            | 26-jun-2025 |
+| `1.4.0-SNAPSHOT` | `e26b77d`  | Preparación de la siguiente iteración de desarrollo                                                  | 19-jun-2025 |
+| **`1.3.2`**      | `e9a9dba`  | Hotfix 1.3.2: Corrección de la version en los archivos pom.xml y actualización de documentación      | 23-jun-2025 |
+| `1.3.1`          | `86c7829`  | Hotfix 1.3.1: Corrección menor en documentación                                                      | 22-jun-2025 |
+| `1.3.0`          | `ae052b0`  | Versión estable v1.3.0: soporte de autenticación básica y actualización de documentación             | 22-jun-2025 |
+| `1.3.0-SNAPSHOT` | `03c3dcd`  | Añade soporte a Swagger para la autenticación con el token                                           | 20-jun-2025 |
+| `1.3.0-SNAPSHOT` | `c403843`  | Añadida seguridad básica con autenticación tipo Bearer (JWT simulado)                                | 20-jun-2025 |
+| `1.3.0-SNAPSHOT` | `6f11ddb`  | Preparación de la siguiente iteración de desarrollo                                                  | 19-jun-2025 |
+| **`v1.2.1`**     | `0e40d98`  | Fix: error en la configuración del `pom.xml`. Versión estable 1.2.1                                  | 19-jun-2025 |
+| `v1.2.0`         | `fde4eac`  | Versión estable 1.2.0 con mejoras en documentación y nuevas métricas                                 | 19-jun-2025 |
+| `1.2.0-SNAPSHOT` | `950c73d`  | Se añaden métricas, se actualiza el README y pequeñas mejoras                                        | 18-jun-2025 |
+| `1.2.0-SNAPSHOT` | `5cca883`  | Añadido módulo de configuración para control sobre la documentación. Pequeñas mejoras                | 18-jun-2025 |
+| `1.2.0-SNAPSHOT` | `c81cebe`  | Mejora de la documentación y pequeña refactorización                                                 | 18-jun-2025 |
+| `1.2.0-SNAPSHOT` | `cf8f10c`  | Preparación de la siguiente iteración de desarrollo                                                  | 18-jun-2025 |
+| **`v1.1.0`**     | `773c553`  | Versión estable con documentación Swagger UI y API doc                                               | 17-jun-2025 |
+| `1.1.0-SNAPSHOT` | `4d5a6b4`  | Info sobre Swagger UI y api-doc añadida en el README                                                 | 17-jun-2025 |
+| `1.1.0-SNAPSHOT` | `58d0bf9`  | Añadiendo documentación Swagger UI y API doc                                                         | 17-jun-2025 |
+| `1.1.0-SNAPSHOT` | `0aff188`  | Cambio en README para mayor claridad                                                                 | 17-jun-2025 |
+| `1.1.0-SNAPSHOT` | `72352cb`  | Preparación de la siguiente iteración de desarrollo                                                  | 17-jun-2025 |
+| **`v1.0.0`**     | `00742d2`  | Versión inicial estable: servicio REST funcional, pruebas completas, H2, arquitectura hexagonal      | 17-jun-2025 |
 
 ---
 
@@ -487,6 +492,22 @@ En un entorno real, se aplicarían medidas de seguridad más robustas, tales com
 
 Estas consideraciones son clave en proyectos reales donde se maneja información sensible o se expone una API a clientes externos.
 La solución implementada aquí puede evolucionarse fácilmente para incorporar dichas medidas.
+
+---
+
+### Ejemplo práctico de análisis y corrección de vulnerabilidades
+
+Para asegurar la calidad y seguridad del proyecto, se ha realizado un análisis automatizado de vulnerabilidades utilizando la herramienta [OWASP Dependency-Check](https://owasp.org/www-project-dependency-check/), que escanea las dependencias del proyecto comparándolas con la base de datos pública de vulnerabilidades conocidas (NVD).
+
+Gracias a este análisis, se identificó y corrigió la siguiente vulnerabilidad crítica:
+
+- **Dependencia afectada:** `tomcat-embed-core:10.1.25`
+- **Vulnerabilidad:** Equivalencia de rutas (path equivalence) en Apache Tomcat que puede permitir eludir controles de acceso.
+- **Fecha de publicación en NVD:** 2025-04-01
+- **Fecha límite sugerida para mitigación:** 2025-04-22
+- **CPE:** `cpe:2.3:a:apache:tomcat:10.1.25:*:*:*:*:*:*:*`
+
+La corrección se aplicó actualizando o parcheando la dependencia afectada, ejemplificando la importancia de incorporar análisis de seguridad en el ciclo de desarrollo para mantener un entorno confiable y seguro.
 
 ---
 
@@ -533,6 +554,6 @@ Kubernetes (Helm, Kustomize), facilitando el despliegue en plataformas como AWS,
 
 - **Autor**: Francisco Javier Dávila Foncuverta
 - **Fecha de creación**: 16 de junio de 2025
-- **Última actualización**: 22 de junio de 2025
+- **Última actualización**: 27 de junio de 2025
 
 Gracias por revisar este proyecto. Cualquier comentario o sugerencia será bien recibido.
