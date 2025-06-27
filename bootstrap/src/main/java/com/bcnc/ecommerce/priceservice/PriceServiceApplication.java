@@ -8,6 +8,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
  * <p>
  * Esta clase arranca el contexto de Spring Boot.
  */
+@SuppressWarnings("checkstyle:HideUtilityClassConstructor")
 @SpringBootApplication
 public class PriceServiceApplication {
     /**
