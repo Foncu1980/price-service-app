@@ -3,9 +3,13 @@ package com.bcnc.ecommerce.priceservice.adapter.web.dto;
 import java.time.LocalDateTime;
 
 /**
- * DTO de error para respuestas HTTP fallidas en la API de precios.
- * Incluye información sobre el estado HTTP, mensaje de error y marca temporal.
+ * Representa la respuesta de error estándar para la API de precios.
+ * <p>
+ * Este DTO se utiliza en respuestas HTTP fallidas para proporcionar
+ * información estructurada sobre el error ocurrido.
+ * </p>
  *
+ * <p>Ejemplo de respuesta JSON:</p>
  * <pre>
  * {
  *   "timestamp": "2025-06-17T18:40:00",
@@ -14,10 +18,15 @@ import java.time.LocalDateTime;
  *   "message": "No se encontró un precio para el producto 99999"
  * }
  * </pre>
+ *
+ * @param timestamp fecha y hora del error
+ * @param status código de estado HTTP
+ * @param error descripción corta del error
+ * @param message mensaje explicativo detallado
  */
 public record PriceErrorResponse(
         LocalDateTime timestamp,
         int status,
         String error,
         String message
-) {}
+) { }

@@ -33,35 +33,53 @@ import java.time.LocalDateTime;
 @RestController
 @RequestMapping("/prices")
 @Validated
-public class PriceController
-{
-    private static final Logger LOG = LoggerFactory.getLogger(PriceController.class);
+public class PriceController {
+    /**
+     * Logger de la clase PriceController.
+     */
+    private static final Logger LOG = LoggerFactory
+            .getLogger(PriceController.class);
 
+    /**
+     * Servicio de precios que se inyecta mediante constructor.
+     */
     private final PriceService priceService;
 
-    public PriceController(PriceService priceService)
-    {
-        this.priceService = priceService;
+    /**
+     * Constructor que inyecta el servicio de precios.
+     *
+     * @param priceServiceParam servicio de precios.
+     */
+    public PriceController(final PriceService priceServiceParam) {
+        this.priceService = priceServiceParam;
     }
 
     /**
-     * Endpoint que calcula el precio aplicable dado un producto, cadena y fecha.
+     * Endpoint que calcula el precio aplicable dado un producto, caden
+     * y fecha.
      *
-     * @param applicationDate fecha y hora de aplicación del precio (en formato ISO).
+     * @param applicationDate fecha y hora de aplicación del
+     *                        precio (en formato ISO).
      * @param productId ID del producto.
      * @param brandId ID de la cadena.
      * @return respuesta con los datos del precio aplicable.
      */
-    @Operation(summary = "Obtiene el precio aplicable a un producto para una fecha dada")
+    @Operation(summary =
+            "Obtiene el precio aplicable a un producto para una fecha dada")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Precio calculado correctamente",
+            @ApiResponse(responseCode = "200",
+                    description = "Precio calculado correctamente",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = PriceResponse.class))
+                            schema = @Schema(implementation
+                                    = PriceResponse.class))
             ),
-            @ApiResponse(responseCode = "400", description = "Parámetros de entrada inválidos o faltantes",
+            @ApiResponse(responseCode = "400",
+                    description = "Parámetros de entrada inválidos o faltantes",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = PriceErrorResponse.class),
-                            examples = @ExampleObject(name = "BadRequest", value = """
+                            schema = @Schema(implementation
+                                    = PriceErrorResponse.class),
+                            examples = @ExampleObject(name
+                                    = "BadRequest", value = """
                 {
                   "timestamp": "2025-06-18T17:27:56.976Z",
                   "status": 400,
@@ -71,10 +89,13 @@ public class PriceController
             """)
                     )
             ),
-            @ApiResponse(responseCode = "404", description = "No se encontró tarifa aplicable",
+            @ApiResponse(responseCode = "404", description
+                    = "No se encontró tarifa aplicable",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = PriceErrorResponse.class),
-                            examples = @ExampleObject(name = "NotFound", value = """
+                            schema = @Schema(implementation
+                                    = PriceErrorResponse.class),
+                            examples = @ExampleObject(name
+                                    = "NotFound", value = """
                 {
                   "timestamp": "2025-06-18T17:27:56.976Z",
                   "status": 404,
@@ -84,10 +105,13 @@ public class PriceController
             """)
                     )
             ),
-            @ApiResponse(responseCode = "500", description = "Error interno del servidor",
+            @ApiResponse(responseCode = "500", description =
+                    "Error interno del servidor",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = PriceErrorResponse.class),
-                            examples = @ExampleObject(name = "InternalServerError", value = """
+                            schema = @Schema(implementation =
+                                    PriceErrorResponse.class),
+                            examples = @ExampleObject(name =
+                                    "InternalServerError", value = """
                 {
                   "timestamp": "2025-06-18T17:27:56.976Z",
                   "status": 500,
@@ -98,40 +122,46 @@ public class PriceController
                     )
             )
     })
-    @GetMapping("/applicable") //
+    @GetMapping("/applicable")
     public ResponseEntity<PriceResponse> getApplicablePrice(
             @Parameter(
                     name = "applicationDate",
                     in = ParameterIn.QUERY,
-                    description = "Fecha y hora de aplicación en formato ISO-8601, ej: 2020-06-14T10:00:00",
+                    description = "Fecha y hora de aplicación en formato "
+                            + "ISO-8601, ej: 2020-06-14T10:00:00",
                     required = true,
                     example = "2020-06-14T10:00:00",
                     schema = @Schema(type = "string", format = "date-time")
             )
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime applicationDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+            final LocalDateTime applicationDate,
 
             @Parameter(
                     name = "productId",
                     description = "ID del producto",
                     required = true,
                     example = "35455",
-                    schema = @Schema(type = "integer", format = "int64", minimum = "0")
+                    schema = @Schema(type = "integer", format = "int64",
+                            minimum = "0")
             )
-            @RequestParam @Min(0) Long productId,
+            @RequestParam @Min(0) final Long productId,
 
             @Parameter(
                     name = "brandId",
                     description = "ID de la cadena",
                     required = true,
                     example = "1",
-                    schema = @Schema(type = "integer", format = "int64", minimum = "0")
+                    schema = @Schema(type = "integer", format = "int64",
+                            minimum = "0")
             )
-            @RequestParam @Min(0) Long brandId)
-    {
-        LOG.info("Recibida petición GET /applicable con applicationDate={}, productId={}, brandId={}",
+            @RequestParam @Min(0) final Long brandId) {
+
+        LOG.info("Recibida petición GET /applicable con applicationDate={}, "
+                        + "productId={}, brandId={}",
                 applicationDate, productId, brandId);
 
-        Price price = priceService.findApplicablePrice(applicationDate, productId, brandId);
+        Price price = priceService.findApplicablePrice(applicationDate,
+                productId, brandId);
 
         LOG.info("Precio calculado devuelto: {}", price);
         return ResponseEntity.ok(mapToResponse(price));
@@ -143,8 +173,7 @@ public class PriceController
      * @param price objeto dominio Price
      * @return DTO PriceResponse
      */
-    private PriceResponse mapToResponse(Price price)
-    {
+    private PriceResponse mapToResponse(final Price price) {
         return new PriceResponse(
                 price.getProductId(),
                 price.getBrandId(),

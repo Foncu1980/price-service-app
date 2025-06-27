@@ -14,16 +14,20 @@ import java.util.Optional;
  */
 public class PriceSelectionService {
     /**
-     * Selecciona el precio aplicable para la fecha dada (el de mayor
-     * prioridad, si hay más de uno).
+     * Selecciona el precio aplicable para la fecha dada
+     * (el de mayor prioridad, si hay más de uno).
      *
-     * @param prices lista de precios candidatos
+     * @param prices          lista de precios candidatos
      * @param applicationDate fecha de aplicación
      * @return precio aplicable, si existe
      */
-    public Optional<Price> selectApplicablePrice(List<Price> prices, LocalDateTime applicationDate) {
+    public Optional<Price> selectApplicablePrice(
+            final List<Price> prices,
+            final LocalDateTime applicationDate) {
+
         return prices.stream()
-                .filter(p -> !applicationDate.isBefore(p.getStartDate()) && !applicationDate.isAfter(p.getEndDate()))
+                .filter(p -> !applicationDate.isBefore(p.getStartDate())
+                        && !applicationDate.isAfter(p.getEndDate()))
                 .max(Comparator.comparingInt(Price::getPriority));
     }
 }

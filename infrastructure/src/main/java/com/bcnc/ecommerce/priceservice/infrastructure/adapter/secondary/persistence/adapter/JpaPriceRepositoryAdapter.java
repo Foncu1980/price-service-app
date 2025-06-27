@@ -10,38 +10,41 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * Adaptador de infraestructura que implementa el repositorio de dominio {@link PriceRepository}
- * usando un repositorio JPA sobre una base de datos H2 en memoria.
+ * Adaptador de infraestructura que implementa el repositorio de
+ * dominio {@link PriceRepository} usando un repositorio JPA
+ * sobre una base de datos H2 en memoria.
  * <p>
- * Este adaptador actúa como puerto de salida para acceder a los precios persistidos,
- * y se encarga de mapear las entidades JPA a objetos del dominio.
+ * Este adaptador actúa como puerto de salida para acceder a los precios
+ * persistidos, y se encarga de mapear las entidades JPA a objetos del dominio.
  * </p>
  */
 @Component
-public class JpaPriceRepositoryAdapter implements PriceRepository
-{
-    // Repositorio JPA de Spring para acceder a la entidad persistente
+public class JpaPriceRepositoryAdapter implements PriceRepository {
+    /** Repositorio JPA de Spring para acceder a la entidad persistente. */
     private final PriceJpaRepository priceJpaRepository;
-    // Componente encargado del mapeo entre entidad persistente y modelo de dominio
+    /** Componente encargado del mapeo entre entidad persistente y
+     * modelo de dominio. */
     private final PriceMapper priceMapper;
 
     /**
      * Constructor con inyección de dependencias.
      *
-     * @param priceJpaRepository repositorio JPA que accede a la base de datos.
-     * @param priceMapper        componente de mapeo entre entidad y modelo de dominio.
+     * @param jpaRepository repositorio JPA que accede a la base de datos.
+     * @param mapper        componente de mapeo entre entidad y
+     *                           modelo de dominio.
      */
-    public JpaPriceRepositoryAdapter(PriceJpaRepository priceJpaRepository, PriceMapper priceMapper)
-    {
-        this.priceJpaRepository = priceJpaRepository;
-        this.priceMapper = priceMapper;
+    public JpaPriceRepositoryAdapter(final PriceJpaRepository jpaRepository,
+                                     final PriceMapper mapper) {
+        this.priceJpaRepository = jpaRepository;
+        this.priceMapper = mapper;
     }
 
     /**
-     * Recupera todas las tarifas que aplican al producto y cadena especificados
-     * en la fecha proporcionada.
+     * Recupera todas las tarifas que aplican al producto y cadena
+     * especificados en la fecha proporcionada.
      *
-     * <p>La lógica para seleccionar el precio final más adecuado se aplica en el dominio.</p>
+     * <p>La lógica para seleccionar el precio final más adecuado se aplica
+     * en el dominio.</p>
      *
      * @param applicationDate fecha de aplicación para la búsqueda.
      * @param productId       identificador del producto.
@@ -49,10 +52,11 @@ public class JpaPriceRepositoryAdapter implements PriceRepository
      * @return lista de {@link Price} aplicables.
      */
     @Override
-    public List<Price> findApplicablePrices(LocalDateTime applicationDate,
-                                                                Long productId,
-                                                                Long brandId)
-    {
+    public List<Price> findApplicablePrices(
+            final LocalDateTime applicationDate,
+            final Long productId,
+            final Long brandId) {
+
         return priceJpaRepository
                 .findApplicablePrices(applicationDate, productId, brandId)
                 .stream()

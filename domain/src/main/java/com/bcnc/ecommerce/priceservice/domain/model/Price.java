@@ -4,158 +4,318 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-// Comentario: Dependiendo de
-
 /**
- * Modelo de dominio que representa un precio aplicable a un producto de una cadena
- * en un intervalo de fechas determinado.
+ * Modelo de dominio que representa un precio aplicable a un producto
+ * de una cadena en un intervalo de fechas determinado.
  * <p>
- * Incluye información como la tarifa (priceList), prioridad de aplicación,
- * y precio final en una determinada moneda.
+ * Incluye la tarifa (priceList), prioridad de aplicación, y precio
+ * final en una determinada moneda.
  * </p>
  * <p>
- * Esta clase se utiliza en la lógica de negocio y en la capa de aplicación
+ * Se utiliza en la lógica de negocio y en la capa de aplicación
  * para resolver qué tarifa se aplica en una fecha concreta.
+ * </p>
  */
-public final class Price
-{
+public final class Price {
+    /**
+     * Identificador de la cadena (brand).
+     */
     private final Long brandId;
+
+    /**
+     * Fecha y hora de inicio de validez del precio.
+     */
     private final LocalDateTime startDate;
+
+    /**
+     * Fecha y hora de fin de validez del precio.
+     */
     private final LocalDateTime endDate;
+
+    /**
+     * Identificador de la tarifa.
+     */
     private final Integer priceList;
+
+    /**
+     * Identificador del producto.
+     */
     private final Long productId;
+
+    /**
+     * Prioridad del precio en caso de solapamiento.
+     */
     private final Integer priority;
+
+    /**
+     * Valor monetario del precio.
+     */
     private final BigDecimal price;
+
+    /**
+     * Código de la moneda (por ejemplo, "EUR").
+     */
     private final String curr;
 
+    private Price(final Builder builder) {
+        this.brandId = builder.brandId;
+        this.startDate = builder.startDate;
+        this.endDate = builder.endDate;
+        this.priceList = builder.priceList;
+        this.productId = builder.productId;
+        this.priority = builder.priority;
+        this.price = builder.price;
+        this.curr = builder.curr;
+    }
+
     /**
-     * Crea una nueva instancia inmutable del modelo de dominio {@code Price}.
-     * <p>
-     * Este constructor valida que todos los argumentos sean válidos antes de crear el objeto.
-     * Lanza una {@link IllegalArgumentException} si alguno de los parámetros no cumple con los requisitos esperados.
-     * </p>
+     * Builder para crear instancias de Price con validación.
+     */
+    public static final class Builder {
+
+        /**
+         * Identificador de la cadena (brandId) para el que aplica el precio.
+         */
+        private Long brandId;
+
+        /**
+         * Fecha y hora desde la cual el precio es válido.
+         */
+        private LocalDateTime startDate;
+
+        /**
+         * Fecha y hora hasta la cual el precio es válido.
+         */
+        private LocalDateTime endDate;
+
+        /**
+         * Identificador de la tarifa o price list.
+         */
+        private Integer priceList;
+
+        /**
+         * Identificador del producto al que se aplica el precio.
+         */
+        private Long productId;
+
+        /**
+         * Prioridad en caso de solapamiento con otros precios.
+         */
+        private Integer priority;
+
+        /**
+         * Valor monetario del precio.
+         */
+        private BigDecimal price;
+
+        /**
+         * Código de la moneda (por ejemplo, "EUR").
+         */
+        private String curr;
+
+        /**
+         * Establece el identificador de cadena.
+         *
+         * @param inputBrandId identificador de la cadena
+         * @return el builder actualizado
+         */
+        public Builder brandId(final Long inputBrandId) {
+            this.brandId = inputBrandId;
+            return this;
+        }
+
+        /**
+         * Establece la fecha de inicio.
+         *
+         * @param inputStartDate fecha de inicio
+         * @return el builder actualizado
+         */
+        public Builder startDate(final LocalDateTime inputStartDate) {
+            this.startDate = inputStartDate;
+            return this;
+        }
+
+        /**
+         * Establece la fecha de fin.
+         *
+         * @param inputEndDate fecha de fin
+         * @return el builder actualizado
+         */
+        public Builder endDate(final LocalDateTime inputEndDate) {
+            this.endDate = inputEndDate;
+            return this;
+        }
+
+        /**
+         * Establece el identificador de tarifa.
+         *
+         * @param inputPriceList identificador de tarifa
+         * @return el builder actualizado
+         */
+        public Builder priceList(final Integer inputPriceList) {
+            this.priceList = inputPriceList;
+            return this;
+        }
+
+        /**
+         * Establece el identificador del producto.
+         *
+         * @param inputProductId identificador de producto
+         * @return el builder actualizado
+         */
+        public Builder productId(final Long inputProductId) {
+            this.productId = inputProductId;
+            return this;
+        }
+
+        /**
+         * Establece la prioridad.
+         *
+         * @param inputPriority prioridad
+         * @return el builder actualizado
+         */
+        public Builder priority(final Integer inputPriority) {
+            this.priority = inputPriority;
+            return this;
+        }
+
+        /**
+         * Establece el precio.
+         *
+         * @param inputPrice precio
+         * @return el builder actualizado
+         */
+        public Builder price(final BigDecimal inputPrice) {
+            this.price = inputPrice;
+            return this;
+        }
+
+        /**
+         * Establece el código de la moneda.
+         *
+         * @param inputCurr código de moneda
+         * @return el builder actualizado
+         */
+        public Builder curr(final String inputCurr) {
+            this.curr = inputCurr;
+            return this;
+        }
+
+        /**
+         * Construye una instancia inmutable de Price.
+         *
+         * @return instancia de Price
+         */
+        public Price build() {
+            Objects.requireNonNull(brandId, "brandId no puede ser nulo");
+            Objects.requireNonNull(productId, "productId no puede ser nulo");
+            Objects.requireNonNull(startDate, "startDate no puede ser nulo");
+            Objects.requireNonNull(endDate, "endDate no puede ser nulo");
+            Objects.requireNonNull(priceList, "priceList no puede ser nulo");
+            Objects.requireNonNull(priority, "priority no puede ser nulo");
+            Objects.requireNonNull(price, "price no puede ser nulo");
+            Objects.requireNonNull(curr, "curr no puede ser nulo");
+
+            if (brandId < 0) {
+                throw new IllegalArgumentException("brandId negativo");
+            }
+            if (productId < 0) {
+                throw new IllegalArgumentException("productId negativo");
+            }
+            if (priceList < 0) {
+                throw new IllegalArgumentException("priceList negativo");
+            }
+            if (priority < 0) {
+                throw new IllegalArgumentException("priority negativa");
+            }
+            if (price.compareTo(BigDecimal.ZERO) < 0) {
+                throw new IllegalArgumentException("precio < 0");
+            }
+            if (endDate.isBefore(startDate)) {
+                throw new IllegalArgumentException(
+                        "endDate antes de startDate"
+                );
+            }
+            if (curr.isBlank()) {
+                throw new IllegalArgumentException("curr vacío");
+            }
+
+            return new Price(this);
+        }
+    }
+
+    /**
+     * Devuelve un nuevo builder para crear instancias de {@link Price}.
      *
-     * @param brandId   identificador de la cadena (no nulo y positivo).
-     * @param startDate fecha de inicio del periodo de validez del precio (no nula).
-     * @param endDate   fecha de fin del periodo de validez del precio (no nula y posterior a {@code startDate}).
-     * @param priceList identificador de la tarifa (no nulo y positivo).
-     * @param productId identificador del producto (no nulo y positivo).
-     * @param priority  prioridad de la tarifa (no nula y no negativa).
-     * @param price     valor monetario del precio (no nulo y ≥ 0).
-     * @param curr      código de la moneda (no nulo ni vacío).
-     * @throws IllegalArgumentException si algún argumento es nulo, negativo o inconsistente.
+     * @return builder de {@link Price}
      */
-    public Price(Long brandId, LocalDateTime startDate, LocalDateTime endDate, Integer priceList,
-                 Long productId, Integer priority, BigDecimal price, String curr)
-    {
-        // Validar nulos primero usando Objects.requireNonNull
-        this.brandId = Objects.requireNonNull(brandId, "brandId no puede ser nulo");
-        this.productId = Objects.requireNonNull(productId, "productId no puede ser nulo");
-        this.startDate = Objects.requireNonNull(startDate, "startDate no puede ser nulo");
-        this.endDate = Objects.requireNonNull(endDate, "endDate no puede ser nulo");
-        this.priceList = Objects.requireNonNull(priceList, "priceList no puede ser nulo");
-        this.priority = Objects.requireNonNull(priority, "priority no puede ser nulo");
-        this.price = Objects.requireNonNull(price, "price no puede ser nulo");
-        this.curr = Objects.requireNonNull(curr, "curr no puede ser nulo");
-
-        // Validar valores negativos y otras reglas de negocio
-        validateNonNegativeValue(brandId, "brandId");
-        validateNonNegativeValue(productId, "productId");
-        validateNonNegativeValue(priceList, "priceList");
-        validateNonNegativeValue(priority, "priority");
-        validatePrice(price);
-        validateDates(startDate, endDate);
-        validateCurrency(curr);
+    public static Builder builder() {
+        return new Builder();
     }
 
     /**
-     * Valida que el valor numérico proporcionado no sea negativo.
+     * @return identificador de cadena
      */
-    private void validateNonNegativeValue(Number value, String fieldName)
-    {
-        if (value.longValue() < 0)
-        {
-            throw new IllegalArgumentException(fieldName + " no puede ser negativo");
-        }
-    }
-
-    /**
-     * Valida que el precio proporcionado sea mayor o igual que cero.
-     */
-    private void validatePrice(BigDecimal price)
-    {
-        if (price.compareTo(BigDecimal.ZERO) < 0)
-        {
-            throw new IllegalArgumentException("El precio debe ser >= 0. Valor recibido: " + price);
-        }
-    }
-
-    /**
-     * Valida que la fecha de fin no sea anterior a la fecha de inicio.
-     */
-    private void validateDates(LocalDateTime startDate, LocalDateTime endDate)
-    {
-        if (endDate.isBefore(startDate))
-        {
-            throw new IllegalArgumentException("La fecha de fin no puede ser anterior a la fecha de inicio");
-        }
-    }
-
-    /**
-     * Valida que el código de moneda no esté vacío ni en blanco.
-     */
-    private void validateCurrency(String curr)
-    {
-        if (curr.isBlank())
-        {
-            throw new IllegalArgumentException("curr no puede estar vacío");
-        }
-    }
-
-    // Getters
-    public Long getBrandId()
-    {
+    public Long getBrandId() {
         return brandId;
     }
 
-    public LocalDateTime getStartDate()
-    {
+    /**
+     * @return fecha de inicio de validez
+     */
+    public LocalDateTime getStartDate() {
         return startDate;
     }
 
-    public LocalDateTime getEndDate()
-    {
+    /**
+     * @return fecha de fin de validez
+     */
+    public LocalDateTime getEndDate() {
         return endDate;
     }
 
-    public Integer getPriceList()
-    {
+    /**
+     * @return identificador de tarifa
+     */
+    public Integer getPriceList() {
         return priceList;
     }
 
-    public Long getProductId()
-    {
+    /**
+     * @return identificador del producto
+     */
+    public Long getProductId() {
         return productId;
     }
 
-    public Integer getPriority()
-    {
+    /**
+     * @return prioridad de aplicación
+     */
+    public Integer getPriority() {
         return priority;
     }
 
-    public BigDecimal getPrice()
-    {
+    /**
+     * @return valor del precio
+     */
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public String getCurr()
-    {
+    /**
+     * @return código de moneda (por ejemplo "EUR")
+     */
+    public String getCurr() {
         return curr;
     }
 
+    /**
+     * Representación en texto del objeto Price.
+     *
+     * @return representación toString
+     */
     @Override
-    public String toString()
-    {
+    public String toString() {
         return new StringBuilder("Price{")
                 .append("brandId=").append(brandId)
                 .append(", startDate=").append(startDate)
@@ -169,24 +329,40 @@ public final class Price
                 .toString();
     }
 
+    /**
+     * Compara la igualdad de dos objetos Price.
+     *
+     * @param o objeto a comparar
+     * @return true si son iguales
+     */
     @Override
-    public boolean equals(Object o)
-    {
-        if (this == o) return true;
-        if (!(o instanceof Price otherPrice)) return false;
-        return Objects.equals(brandId, otherPrice.brandId) &&
-                Objects.equals(startDate, otherPrice.startDate) &&
-                Objects.equals(endDate, otherPrice.endDate) &&
-                Objects.equals(priceList, otherPrice.priceList) &&
-                Objects.equals(productId, otherPrice.productId) &&
-                Objects.equals(priority, otherPrice.priority) &&
-                Objects.equals(price, otherPrice.price) &&
-                Objects.equals(curr, otherPrice.curr);
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Price other)) {
+            return false;
+        }
+        return Objects.equals(brandId, other.brandId)
+                && Objects.equals(startDate, other.startDate)
+                && Objects.equals(endDate, other.endDate)
+                && Objects.equals(priceList, other.priceList)
+                && Objects.equals(productId, other.productId)
+                && Objects.equals(priority, other.priority)
+                && Objects.equals(price, other.price)
+                && Objects.equals(curr, other.curr);
     }
 
+    /**
+     * Calcula el hashCode del objeto Price.
+     *
+     * @return hashCode
+     */
     @Override
-    public int hashCode()
-    {
-        return Objects.hash(brandId, startDate, endDate, priceList, productId, priority, price, curr);
+    public int hashCode() {
+        return Objects.hash(
+                brandId, startDate, endDate, priceList,
+                productId, priority, price, curr
+        );
     }
 }

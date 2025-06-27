@@ -10,10 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
+import static org.junit.jupiter.api.Assertions.*;
 
 class PriceSelectionServiceTest {
 
@@ -24,11 +21,33 @@ class PriceSelectionServiceTest {
         service = new PriceSelectionService();
     }
 
+    private Price createPrice(
+            final long brandId,
+            final LocalDateTime start,
+            final LocalDateTime end,
+            final int priceList,
+            final long productId,
+            final int priority,
+            final BigDecimal price
+    ) {
+        return new Price.Builder()
+                .brandId(brandId)
+                .startDate(start)
+                .endDate(end)
+                .priceList(priceList)
+                .productId(productId)
+                .priority(priority)
+                .price(price)
+                .curr("EUR")
+                .build();
+    }
+
     @Test
     @DisplayName("Devuelve el precio cuando solo hay uno aplicable")
     void shouldReturnSingleApplicablePrice() {
         LocalDateTime localTime = LocalDateTime.of(2020, 6, 14, 12, 0);
-        Price price = new Price(1L, localTime.minusHours(1), localTime.plusHours(1), 1, 100L, 0, new BigDecimal("20.00"), "EUR");
+        Price price = createPrice(1L, localTime.minusHours(1), localTime.plusHours(1),
+                1, 100L, 0, new BigDecimal("20.00"));
 
         Optional<Price> result = service.selectApplicablePrice(List.of(price), localTime);
 
@@ -43,8 +62,11 @@ class PriceSelectionServiceTest {
     void shouldReturnHighestPriorityPrice() {
         LocalDateTime date = LocalDateTime.of(2020, 6, 14, 16, 0);
 
-        Price lowPriority = new Price(1L, date.minusHours(2), date.plusHours(2), 1, 35455L, 0, new BigDecimal("30.50"), "EUR");
-        Price highPriority = new Price(1L, date.minusHours(3), date.plusHours(3), 2, 35455L, 1, new BigDecimal("25.45"), "EUR");
+        Price lowPriority = createPrice(1L, date.minusHours(2), date.plusHours(2),
+                1, 35455L, 0, new BigDecimal("30.50"));
+
+        Price highPriority = createPrice(1L, date.minusHours(3), date.plusHours(3),
+                2, 35455L, 1, new BigDecimal("25.45"));
 
         Optional<Price> result = service.selectApplicablePrice(List.of(lowPriority, highPriority), date);
 
@@ -58,7 +80,8 @@ class PriceSelectionServiceTest {
     @DisplayName("Devuelve vacío si ninguna tarifa es aplicable en la fecha")
     void shouldReturnEmptyWhenNoPriceIsApplicable() {
         LocalDateTime now = LocalDateTime.now();
-        Price price = new Price(1L, now.minusDays(2), now.minusDays(1), 1, 100L, 0, new BigDecimal("19.99"), "EUR");
+        Price price = createPrice(1L, now.minusDays(2), now.minusDays(1),
+                1, 100L, 0, new BigDecimal("19.99"));
 
         Optional<Price> result = service.selectApplicablePrice(List.of(price), now);
 
@@ -80,15 +103,18 @@ class PriceSelectionServiceTest {
     void shouldReturnAnyIfPrioritiesAreEqual() {
         LocalDateTime date = LocalDateTime.of(2020, 6, 14, 16, 0);
 
-        Price p1 = new Price(1L, date.minusHours(1), date.plusHours(1), 1, 35455L, 1, new BigDecimal("30.00"), "EUR");
-        Price p2 = new Price(1L, date.minusHours(2), date.plusHours(2), 2, 35455L, 1, new BigDecimal("40.00"), "EUR");
+        Price price1 = createPrice(1L, date.minusHours(1), date.plusHours(1),
+                1, 35455L, 1, new BigDecimal("30.00"));
 
-        Optional<Price> result = service.selectApplicablePrice(List.of(p1, p2), date);
+        Price price2 = createPrice(1L, date.minusHours(2), date.plusHours(2),
+                2, 35455L, 1, new BigDecimal("40.00"));
+
+        Optional<Price> result = service.selectApplicablePrice(List.of(price1, price2), date);
 
         assertAll(
                 () -> assertTrue(result.isPresent()),
                 () -> assertEquals(1, result.get().getPriority()),
-                () -> assertTrue(result.get().equals(p1) || result.get().equals(p2))
+                () -> assertTrue(result.get().equals(price1) || result.get().equals(price2))
         );
     }
 
@@ -98,7 +124,8 @@ class PriceSelectionServiceTest {
         LocalDateTime start = LocalDateTime.of(2020, 6, 14, 10, 0);
         LocalDateTime end = LocalDateTime.of(2020, 6, 14, 20, 0);
 
-        Price price = new Price(1L, start, end, 1, 35455L, 0, new BigDecimal("20.00"), "EUR");
+        Price price = createPrice(1L, start, end, 1, 35455L, 0,
+                new BigDecimal("20.00"));
 
         assertAll(
                 () -> assertTrue(service.selectApplicablePrice(List.of(price), start).isPresent()),

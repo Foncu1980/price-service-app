@@ -64,10 +64,16 @@ class PriceMapperTest
     @DisplayName("Mapeo correcto de Price a PriceEntity")
     void testToEntity()
     {
-        Price price = new Price(1L,
-                LocalDateTime.of(2020, 6, 15, 0, 0),
-                LocalDateTime.of(2020, 6, 15, 11, 0),
-                3, 35455L, 1, new BigDecimal("30.50"), "EUR");
+        Price price = Price.builder()
+                .brandId(1L)
+                .startDate(LocalDateTime.of(2020, 6, 14, 0, 0))
+                .endDate(LocalDateTime.of(2020, 12, 31, 23, 59, 59))
+                .priceList(1)
+                .productId(35455L)
+                .priority(0)
+                .price(new BigDecimal("35.50"))
+                .curr("EUR")
+                .build();
 
         PriceEntity entity = mapper.toEntity(price);
 
@@ -85,10 +91,16 @@ class PriceMapperTest
     @Test
     @DisplayName("Mapeo de Price a PriceEntity con BigDecimal cero")
     void testToEntityWithZeroPrice() {
-        Price price = new Price(1L,
-                LocalDateTime.of(2020, 1, 1, 0, 0),
-                LocalDateTime.of(2020, 1, 2, 0, 0),
-                1, 123L, 0, BigDecimal.ZERO, "EUR");
+        Price price = Price.builder()
+                .brandId(1L)
+                .startDate(LocalDateTime.of(2020, 6, 14, 0, 0))
+                .endDate(LocalDateTime.of(2020, 12, 31, 23, 59, 59))
+                .priceList(1)
+                .productId(35455L)
+                .priority(0)
+                .price(BigDecimal.ZERO)
+                .curr("EUR")
+                .build();
 
         PriceEntity entity = mapper.toEntity(price);
 

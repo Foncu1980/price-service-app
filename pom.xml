@@ -78,7 +78,6 @@
             <useModulePath>false</useModulePath>
           </configuration>
         </plugin>
-
       </plugins>
     </pluginManagement>
   </build>

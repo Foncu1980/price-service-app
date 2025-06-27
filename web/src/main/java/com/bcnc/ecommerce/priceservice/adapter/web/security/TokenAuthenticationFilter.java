@@ -15,27 +15,62 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Collections;
 
-public class TokenAuthenticationFilter extends OncePerRequestFilter
-{
-    private static final Logger logger = LoggerFactory.getLogger(TokenAuthenticationFilter.class);
+/**
+ * Filtro de autenticación personalizado que intercepta todas las peticiones
+ * HTTP y valida que incluyan un token Bearer válido en la cabecera
+ * Authorization.
+ * <p>
+ * Si el token es correcto, se establece un usuario autenticado en el contexto
+ * de Spring Security. Si no lo es, se responde con un estado 401 Unauthorized.
+ * </p>
+ *
+ * <p>Las rutas públicas configuradas (como Swagger y actuator) quedan excluidas
+ * de validación.</p>
+ */
+public class TokenAuthenticationFilter extends OncePerRequestFilter {
+    /**
+     * Logger de la clase.
+     */
+    private static final Logger LOGGER =
+            LoggerFactory.getLogger(TokenAuthenticationFilter.class);
 
+    /**
+     * Prefijos de rutas públicas que no requieren autenticación.
+     */
     private static final String[] PUBLIC_PATHS = {
             "/actuator", "/swagger-ui", "/v3/api-docs"
     };
 
+    /**
+     * Token esperado en la cabecera Authorization.
+     */
     private final String expectedToken;
 
-    public TokenAuthenticationFilter(String expectedToken)
-    {
-        this.expectedToken = expectedToken;
+    /**
+     * Constructor del filtro.
+     *
+     * @param token el token que debe recibirse en la cabecera
+     *                      Authorization
+     */
+    public TokenAuthenticationFilter(final String token) {
+        this.expectedToken = token;
     }
 
+    /**
+     * Intercepta cada petición HTTP y aplica lógica de autenticación
+     * basada en token.
+     *
+     * @param request      petición HTTP entrante
+     * @param response     respuesta HTTP
+     * @param filterChain  cadena de filtros de Spring
+     * @throws ServletException en caso de error del servlet
+     * @throws IOException      en caso de error de entrada/salida
+     */
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain)
-            throws ServletException, IOException
-    {
+    protected void doFilterInternal(final HttpServletRequest request,
+                                    final HttpServletResponse response,
+                                    final FilterChain filterChain)
+            throws ServletException, IOException {
         String path = request.getRequestURI();
 
         // Rutas públicas que se deben permitir sin token
@@ -45,12 +80,15 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter
         }
 
         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-
         String bearerToken = "Bearer " + expectedToken;
-        if (authHeader == null || !authHeader.trim().equalsIgnoreCase(bearerToken)) {
-            logger.warn("Unauthorized access attempt to '{}' from IP {}", path, request.getRemoteAddr());
 
-            response.setHeader(HttpHeaders.WWW_AUTHENTICATE, "Bearer realm=\"price-service\"");
+        if (authHeader == null
+                || !authHeader.trim().equalsIgnoreCase(bearerToken)) {
+            LOGGER.warn("Unauthorized access attempt to '{}' from IP {}",
+                    path, request.getRemoteAddr());
+
+            response.setHeader(HttpHeaders.WWW_AUTHENTICATE,
+                    "Bearer realm=\"price-service\"");
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType("application/json");
             response.getWriter().write("""
@@ -63,15 +101,23 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter
             return;
         }
 
-        // ✅ Establece un usuario autenticado en el contexto de seguridad
+        // Establece un usuario autenticado en el contexto de seguridad
         UsernamePasswordAuthenticationToken authentication =
-                new UsernamePasswordAuthenticationToken("user", null, Collections.emptyList());
+                new UsernamePasswordAuthenticationToken("user",
+                        null, Collections.emptyList());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         filterChain.doFilter(request, response);
     }
 
-    private boolean isPublicPath(String path) {
+    /**
+     * Verifica si la ruta es pública y puede omitirse la autenticación.
+     *
+     * @param path ruta del request
+     * @return {@code true} si la ruta empieza por alguno de los prefijos
+     * públicos
+     */
+    private boolean isPublicPath(final String path) {
         for (String prefix : PUBLIC_PATHS) {
             if (path.startsWith(prefix)) {
                 return true;

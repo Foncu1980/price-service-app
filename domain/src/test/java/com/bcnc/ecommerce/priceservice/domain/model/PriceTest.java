@@ -8,15 +8,40 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-class PriceTest
-{
+class PriceTest {
+
+    private Price createValidPrice(
+            final BigDecimal price,
+            final LocalDateTime start,
+            final LocalDateTime end
+    ) {
+        return Price.builder()
+                .brandId(1L)
+                .startDate(start)
+                .endDate(end)
+                .priceList(2)
+                .productId(35455L)
+                .priority(1)
+                .price(price)
+                .curr("EUR")
+                .build();
+    }
+
+    private Price.Builder baseBuilder() {
+        return Price.builder()
+                .brandId(1L)
+                .priceList(2)
+                .productId(35455L)
+                .priority(1)
+                .curr("EUR");
+    }
+
     @Test
     @DisplayName("Constructor y getters funcionan correctamente")
-    void testConstructorAndGetters()
-    {
+    void testConstructorAndGetters() {
         LocalDateTime start = LocalDateTime.of(2020, 6, 14, 0, 0);
         LocalDateTime end = LocalDateTime.of(2020, 6, 14, 18, 30);
-        Price price = new Price(1L, start, end, 2, 35455L, 1, new BigDecimal("25.45"), "EUR");
+        Price price = createValidPrice(new BigDecimal("25.45"), start, end);
 
         assertEquals(1L, price.getBrandId());
         assertEquals(start, price.getStartDate());
@@ -30,13 +55,12 @@ class PriceTest
 
     @Test
     @DisplayName("Equals y hashCode funcionan correctamente")
-    void testEqualsAndHashCode()
-    {
+    void testEqualsAndHashCode() {
         LocalDateTime start = LocalDateTime.of(2020, 6, 14, 0, 0);
         LocalDateTime end = LocalDateTime.of(2020, 6, 14, 18, 30);
 
-        Price price1 = new Price(1L, start, end, 2, 35455L, 1, new BigDecimal("25.45"), "EUR");
-        Price price2 = new Price(1L, start, end, 2, 35455L, 1, new BigDecimal("25.45"), "EUR");
+        Price price1 = createValidPrice(new BigDecimal("25.45"), start, end);
+        Price price2 = createValidPrice(new BigDecimal("25.45"), start, end);
 
         assertEquals(price1, price2);
         assertEquals(price1.hashCode(), price2.hashCode());
@@ -48,12 +72,11 @@ class PriceTest
         LocalDateTime start = LocalDateTime.of(2020, 6, 14, 0, 0);
         LocalDateTime end = LocalDateTime.of(2020, 6, 14, 18, 30);
 
-        Price price1 = new Price(1L, start, end, 2, 35455L, 1, new BigDecimal("25.45"), "EUR");
-        Price price2 = new Price(1L, start, end, 2, 35455L, 1, new BigDecimal("30.00"), "EUR");
+        Price price1 = createValidPrice(new BigDecimal("25.45"), start, end);
+        Price price2 = createValidPrice(new BigDecimal("30.00"), start, end);
 
         assertNotEquals(price1, price2);
     }
-
 
     @Test
     @DisplayName("Equals devuelve false si se compara con null")
@@ -61,19 +84,17 @@ class PriceTest
         LocalDateTime start = LocalDateTime.of(2020, 6, 14, 0, 0);
         LocalDateTime end = LocalDateTime.of(2020, 6, 14, 18, 30);
 
-        Price price = new Price(1L, start, end, 2, 35455L, 1, new BigDecimal("25.45"), "EUR");
+        Price price = createValidPrice(new BigDecimal("25.45"), start, end);
 
         assertNotEquals(null, price);
     }
 
-
     @Test
     @DisplayName("toString genera una representación legible con todos los campos clave")
-    void testToString()
-    {
+    void testToString() {
         LocalDateTime startDate = LocalDateTime.of(2020, 6, 14, 15, 0);
         LocalDateTime endDate = LocalDateTime.of(2020, 6, 14, 18, 30);
-        Price price = new Price(1L,startDate,endDate,2,35455L,1,new BigDecimal("25.45"),"EUR");
+        Price price = createValidPrice(new BigDecimal("25.45"), startDate, endDate);
 
         String output = price.toString();
 
@@ -96,7 +117,7 @@ class PriceTest
         LocalDateTime start = LocalDateTime.now();
         LocalDateTime end = start.plusHours(1);
         assertThrows(IllegalArgumentException.class, () ->
-                new Price(1L, start, end, 1, 100L, 1, new BigDecimal("-1.00"), "EUR")
+                createValidPrice(new BigDecimal("-1.00"), start, end)
         );
     }
 
@@ -106,7 +127,7 @@ class PriceTest
         LocalDateTime start = LocalDateTime.now();
         LocalDateTime end = start.minusHours(1);
         assertThrows(IllegalArgumentException.class, () ->
-                new Price(1L, start, end, 1, 100L, 1, new BigDecimal("10.00"), "EUR")
+                createValidPrice(new BigDecimal("10.00"), start, end)
         );
     }
 
@@ -116,13 +137,18 @@ class PriceTest
         LocalDateTime start = LocalDateTime.now();
         LocalDateTime end = start.plusHours(1);
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
-                new Price(1L, start, end, 1, 100L, 1, new BigDecimal("10.00"), " ")
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> baseBuilder()
+                        .startDate(start)
+                        .endDate(end)
+                        .price(new BigDecimal("10.00"))
+                        .curr(" ")
+                        .build()
         );
 
-        assertTrue(exception.getMessage().contains("curr no puede estar vacío"));
+        assertTrue(exception.getMessage().contains("curr vacío"));
     }
-
 
     @Test
     @DisplayName("Lanza excepción si startDate es nulo")
@@ -130,7 +156,11 @@ class PriceTest
         LocalDateTime end = LocalDateTime.now().plusHours(1);
 
         assertThrows(NullPointerException.class, () ->
-                new Price(1L, null, end, 1, 100L, 1, new BigDecimal("10.00"), "EUR")
+                baseBuilder()
+                        .startDate(null)
+                        .endDate(end)
+                        .price(new BigDecimal("10.00"))
+                        .build()
         );
     }
 
@@ -140,10 +170,16 @@ class PriceTest
         LocalDateTime start = LocalDateTime.now();
         LocalDateTime end = start.plusHours(1);
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
-                new Price(-1L, start, end, 1, 100L, 1, new BigDecimal("10.00"), "EUR")
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> baseBuilder()
+                        .brandId(-1L)
+                        .startDate(start)
+                        .endDate(end)
+                        .price(new BigDecimal("10.00"))
+                        .build()
         );
 
-        assertTrue(exception.getMessage().contains("brandId no puede ser negativo"));
+        assertTrue(exception.getMessage().contains("brandId negativo"));
     }
 }

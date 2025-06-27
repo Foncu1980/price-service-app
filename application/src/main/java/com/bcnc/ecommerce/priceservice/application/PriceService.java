@@ -12,16 +12,17 @@ import java.time.LocalDateTime;
  * del producto y la cadena.
  * </p>
  */
-public interface PriceService
-{
+public interface PriceService {
     /**
-     * Recupera el precio aplicable para un producto y una cadena en una fecha dada.
+     * Recupera el precio aplicable para un producto y una cadena
+     * en una fecha dada.
      *
      * @param applicationDate fecha de aplicación
      * @param productId       identificador del producto
      * @param brandId         identificador de la cadena
      * @return el precio correspondiente
      */
-    Price findApplicablePrice(LocalDateTime applicationDate, Long productId, Long brandId);
+    Price findApplicablePrice(LocalDateTime applicationDate,
+                              Long productId, Long brandId);
 }
 

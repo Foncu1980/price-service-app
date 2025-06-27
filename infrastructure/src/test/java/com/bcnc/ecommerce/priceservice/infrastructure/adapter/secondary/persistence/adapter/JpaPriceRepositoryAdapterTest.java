@@ -40,7 +40,7 @@ class JpaPriceRepositoryAdapterTest
         LocalDateTime date = LocalDateTime.of(2020, 6, 14, 16, 0);
 
         PriceEntity entity = new PriceEntity();
-        Price price = new Price(PRODUCT_ID, date, date.plusHours(2), 2, PRODUCT_ID, 1, new BigDecimal("25.45"), "EUR");
+        Price price = createPrice(date, date.plusHours(1), 1, 1, new BigDecimal("25.45"));
 
         when(priceJpaRepository.findApplicablePrices(eq(date), eq(PRODUCT_ID), eq(BRAND_ID)))
                 .thenReturn(List.of(entity));
@@ -78,15 +78,12 @@ class JpaPriceRepositoryAdapterTest
         LocalDateTime date = LocalDateTime.of(2020, 6, 14, 16, 0);
 
         // Entidades diferenciadas (puedes setear cualquier campo para distinguirlas si tienen equals heredado)
-        PriceEntity entity1 = new PriceEntity(BRAND_ID,date,date.plusHours(1),1,
-                PRODUCT_ID,1,new BigDecimal("25.45"),"EUR");
-
-        PriceEntity entity2 = new PriceEntity(BRAND_ID,date.minusHours(1),date.plusHours(2),2,
-                PRODUCT_ID,0,new BigDecimal("35.55"),"EUR");
+        PriceEntity entity1 = createPriceEntity(date, date.plusHours(1), 1, 1, new BigDecimal("25.45"));
+        PriceEntity entity2 = createPriceEntity(date.minusHours(1), date.plusHours(2), 2, 1, new BigDecimal("35.55"));
 
         // Simulación de respuestas mapeadas
-        Price price1 = new Price(BRAND_ID, date, date.plusHours(1), 1, PRODUCT_ID, 1, new BigDecimal("25.45"), "EUR");
-        Price price2 = new Price(BRAND_ID, date.minusHours(1), date.plusHours(2), 2, PRODUCT_ID, 0, new BigDecimal("35.55"), "EUR");
+        Price price1 = createPrice(date, date.plusHours(1), 1, 1, new BigDecimal("25.45"));
+        Price price2 = createPrice(date.minusHours(1), date.plusHours(2), 2, 0, new BigDecimal("35.55"));
 
         // Simula que se devuelven ambas entidades desde la base de datos
         when(priceJpaRepository.findApplicablePrices(eq(date), eq(PRODUCT_ID), eq(BRAND_ID)))
@@ -125,4 +122,41 @@ class JpaPriceRepositoryAdapterTest
         );
     }
 
+    private Price createPrice(
+            final LocalDateTime start,
+            final LocalDateTime end,
+            final Integer priceList,
+            final Integer priority,
+            final BigDecimal price
+    ) {
+        return Price.builder()
+                .brandId(BRAND_ID)
+                .startDate(start)
+                .endDate(end)
+                .priceList(priceList)
+                .productId(PRODUCT_ID)
+                .priority(priority)
+                .price(price)
+                .curr("EUR")
+                .build();
+    }
+
+    private PriceEntity createPriceEntity(
+            final LocalDateTime start,
+            final LocalDateTime end,
+            final Integer priceList,
+            final Integer priority,
+            final BigDecimal price
+    ) {
+        return PriceEntity.builder()
+                .brandId(BRAND_ID)
+                .startDate(start)
+                .endDate(end)
+                .priceList(priceList)
+                .productId(PRODUCT_ID)
+                .priority(priority)
+                .price(price)
+                .curr("EUR")
+                .build();
+    }
 }

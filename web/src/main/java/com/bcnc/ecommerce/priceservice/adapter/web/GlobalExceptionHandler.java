@@ -1,7 +1,7 @@
 package com.bcnc.ecommerce.priceservice.adapter.web;
 
 import com.bcnc.ecommerce.priceservice.adapter.web.dto.PriceErrorResponse;
-import com.bcnc.ecommerce.priceservice.application.exception.PriceNotFoundException;
+import com.bcnc.ecommerce.priceservice.domain.exception.PriceNotFoundException;
 
 import jakarta.validation.ConstraintViolationException;
 
@@ -16,8 +16,9 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 /**
  * Manejador global de excepciones para la capa web del servicio de precios.
  * <p>
- * Captura y transforma excepciones comunes en respuestas HTTP estructuradas en formato JSON,
- * manteniendo coherencia y evitando la exposición de errores internos al cliente.
+ * Captura y transforma excepciones comunes en respuestas HTTP estructuradas
+ * en formato JSON, manteniendo coherencia y evitando la exposición de
+ * errores internos al cliente.
  * </p>
  *
  * <p>Formato típico de respuesta:</p>
@@ -31,12 +32,27 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
  * </pre>
  */
 @RestControllerAdvice
-public class GlobalExceptionHandler
-{
-    // Mensajes
-    private static final String MSG_INTERNAL_SERVER_ERROR = "Error interno del servidor";
-    private static final String MSG_TYPE_MISMATCH = "Formato de parámetro inválido: ";
-    private static final String MSG_MISSING_PARAMETER = "Falta parámetro requerido: ";
+public class GlobalExceptionHandler {
+    /**
+     * Mensaje de error genérico para excepciones no controladas
+     * o fallos internos.
+     */
+    private static final String MSG_INTERNAL_SERVER_ERROR =
+            "Error interno del servidor";
+    /**
+     * Mensaje base para errores de conversión de tipo en
+     * parámetros (type mismatch).
+     * Se espera que se concatene con el nombre del parámetro.
+     */
+    private static final String MSG_TYPE_MISMATCH =
+            "Formato de parámetro inválido: ";
+    /**
+     * Mensaje base para errores por parámetros requeridos que no
+     * fueron enviados.
+     * Se espera que se concatene con el nombre del parámetro faltante.
+     */
+    private static final String MSG_MISSING_PARAMETER =
+            "Falta parámetro requerido: ";
 
     /**
      * Maneja errores cuando no se encuentra un precio aplicable.
@@ -45,19 +61,23 @@ public class GlobalExceptionHandler
      * @return Respuesta HTTP 404 con mensaje informativo.
      */
     @ExceptionHandler(PriceNotFoundException.class)
-    public ResponseEntity<PriceErrorResponse> handlePriceNotFound(PriceNotFoundException ex) {
+    public ResponseEntity<PriceErrorResponse> handlePriceNotFound(
+            final PriceNotFoundException ex) {
         return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
     /**
      * Maneja errores cuando un parámetro tiene un tipo incorrecto.
      *
-     * @param ex Excepción lanzada por Spring cuando hay incompatibilidad de tipos.
+     * @param ex Excepción lanzada por Spring cuando hay
+     *           incompatibilidad de tipos.
      * @return Respuesta HTTP 400 con mensaje sobre el parámetro conflictivo.
      */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<PriceErrorResponse> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
-        return buildResponse(HttpStatus.BAD_REQUEST, MSG_TYPE_MISMATCH + ex.getName());
+    public ResponseEntity<PriceErrorResponse> handleTypeMismatch(
+            final MethodArgumentTypeMismatchException ex) {
+        return buildResponse(HttpStatus.BAD_REQUEST, MSG_TYPE_MISMATCH
+                + ex.getName());
     }
 
     /**
@@ -67,8 +87,10 @@ public class GlobalExceptionHandler
      * @return Respuesta HTTP 400 con nombre del parámetro faltante.
      */
     @ExceptionHandler(MissingServletRequestParameterException.class)
-    public ResponseEntity<PriceErrorResponse> handleMissingParams(MissingServletRequestParameterException ex) {
-        return buildResponse(HttpStatus.BAD_REQUEST, MSG_MISSING_PARAMETER + ex.getParameterName());
+    public ResponseEntity<PriceErrorResponse> handleMissingParams(
+            final MissingServletRequestParameterException ex) {
+        return buildResponse(HttpStatus.BAD_REQUEST, MSG_MISSING_PARAMETER
+                + ex.getParameterName());
     }
 
     /**
@@ -78,18 +100,22 @@ public class GlobalExceptionHandler
      * @return Respuesta HTTP 400 con detalle del error.
      */
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<PriceErrorResponse> handleIllegalArgument(IllegalArgumentException ex) {
+    public ResponseEntity<PriceErrorResponse> handleIllegalArgument(
+            final IllegalArgumentException ex) {
         return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
     /**
-     * Maneja errores de validación declarativa (anotaciones como @Min, @NotNull...).
+     * Maneja errores de validación declarativa.
+     * (anotaciones como @Min, @NotNull...).
      *
-     * @param ex Excepción lanzada cuando se incumplen restricciones de validación.
+     * @param ex Excepción lanzada cuando se incumplen restricciones de
+     *           validación.
      * @return Respuesta HTTP 400 con mensaje del validador.
      */
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<PriceErrorResponse> handleConstraintViolation(ConstraintViolationException ex) {
+    public ResponseEntity<PriceErrorResponse> handleConstraintViolation(
+            final ConstraintViolationException ex) {
         return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
@@ -100,19 +126,27 @@ public class GlobalExceptionHandler
      * @return Respuesta HTTP 500 con mensaje genérico.
      */
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<PriceErrorResponse> handleGenericException(Exception ex) {
-        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, MSG_INTERNAL_SERVER_ERROR);
+    public ResponseEntity<PriceErrorResponse> handleGenericException(
+            final Exception ex) {
+        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR,
+                MSG_INTERNAL_SERVER_ERROR);
     }
 
     /**
-     * Construye una respuesta estructurada en formato JSON para enviar al cliente.
+     * Construye una respuesta estructurada en formato JSON para enviar
+     * al cliente.
      *
      * @param status  Código de estado HTTP.
      * @param message Mensaje explicativo del error.
      * @return Objeto {@link ResponseEntity} con cuerpo detallado del error.
      */
-    private ResponseEntity<PriceErrorResponse> buildResponse(HttpStatus status, String message) {
-        PriceErrorResponse priceErrorResponse = new PriceErrorResponse(LocalDateTime.now(), status.value(), status.getReasonPhrase(), message);
+    private ResponseEntity<PriceErrorResponse> buildResponse(
+            final HttpStatus status,
+            final String message) {
+        PriceErrorResponse priceErrorResponse =
+                new PriceErrorResponse(LocalDateTime.now(), status.value(),
+                        status.getReasonPhrase(), message);
         return ResponseEntity.status(status).body(priceErrorResponse);
     }
 }
+

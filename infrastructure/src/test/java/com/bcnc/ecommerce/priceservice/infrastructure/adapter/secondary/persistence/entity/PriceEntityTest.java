@@ -11,14 +11,12 @@ import static org.junit.jupiter.api.Assertions.*;
 class PriceEntityTest {
 
     @Test
-    @DisplayName("Constructor completo inicializa correctamente los campos")
-    void testConstructorCompleto() {
+    @DisplayName("Builder inicializa correctamente los campos")
+    void testBuilder() {
         LocalDateTime start = LocalDateTime.now();
         LocalDateTime end = start.plusDays(1);
 
-        PriceEntity entity = new PriceEntity(
-                1L, start, end, 2, 35455L, 1, new BigDecimal("20.50"), "EUR"
-        );
+        PriceEntity entity = buildPriceEntity(start, end, new BigDecimal("20.50"));
 
         assertEquals(1L, entity.getBrandId());
         assertEquals(start, entity.getStartDate());
@@ -35,11 +33,11 @@ class PriceEntityTest {
     void testEqualsAndHashCode() {
         LocalDateTime start = LocalDateTime.of(2020, 6, 14, 0, 0);
         LocalDateTime end = start.plusHours(1);
+        BigDecimal price = new BigDecimal("10.00");
 
-        PriceEntity entity1 = new PriceEntity(1L, start, end, 2, 35455L, 1, new BigDecimal("10.00"), "EUR");
-        PriceEntity entity2 = new PriceEntity(1L, start, end, 2, 35455L, 1, new BigDecimal("10.00"), "EUR");
+        PriceEntity entity1 = buildPriceEntity(start, end, price);
+        PriceEntity entity2 = buildPriceEntity(start, end, price);
 
-        // Aunque no tengan el mismo ID, equals usa todos los campos
         assertEquals(entity1, entity2);
         assertEquals(entity1.hashCode(), entity2.hashCode());
     }
@@ -47,13 +45,38 @@ class PriceEntityTest {
     @Test
     @DisplayName("toString no devuelve null y contiene campos clave")
     void testToString() {
-        PriceEntity entity = new PriceEntity();
-        entity.setBrandId(1L);
-        entity.setCurr("EUR");
+        PriceEntity entity = new PriceEntity.Builder()
+                .brandId(1L)
+                .curr("EUR")
+                .build();
 
         String str = entity.toString();
         assertNotNull(str);
         assertTrue(str.contains("brandId=1"));
         assertTrue(str.contains("curr='EUR'"));
+    }
+
+    /**
+     * Crea una instancia de PriceEntity con valores comunes
+     * para simplificar los tests.
+     *
+     * @param startDate fecha de inicio
+     * @param endDate   fecha de fin
+     * @param price     valor monetario
+     * @return instancia de PriceEntity
+     */
+    private PriceEntity buildPriceEntity(LocalDateTime startDate,
+                                         LocalDateTime endDate,
+                                         BigDecimal price) {
+        return PriceEntity.builder()
+                .brandId(1L)
+                .startDate(startDate)
+                .endDate(endDate)
+                .priceList(2)
+                .productId(35455L)
+                .priority(1)
+                .price(price)
+                .curr("EUR")
+                .build();
     }
 }

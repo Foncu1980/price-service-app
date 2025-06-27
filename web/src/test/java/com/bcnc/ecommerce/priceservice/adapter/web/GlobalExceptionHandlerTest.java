@@ -1,7 +1,7 @@
 package com.bcnc.ecommerce.priceservice.adapter.web;
 
 import com.bcnc.ecommerce.priceservice.adapter.web.dto.PriceErrorResponse;
-import com.bcnc.ecommerce.priceservice.application.exception.PriceNotFoundException;
+import com.bcnc.ecommerce.priceservice.domain.exception.PriceNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

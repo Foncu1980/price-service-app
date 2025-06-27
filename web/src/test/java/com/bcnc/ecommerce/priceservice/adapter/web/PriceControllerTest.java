@@ -31,8 +31,16 @@ class PriceControllerUnitTest {
         Long productId = 35455L;
         Long brandId = 1L;
 
-        Price mockPrice = new Price(brandId,date, date.plusHours(2), 1, productId, 1,
-                new BigDecimal("25.45"), "EUR");
+        Price mockPrice = Price.builder()
+                .brandId(brandId)
+                .startDate(date)
+                .endDate(date.plusHours(2))
+                .priceList(1)
+                .productId(productId)
+                .priority(1)
+                .price(new BigDecimal("25.45"))
+                .curr("EUR")
+                .build();
 
         when(priceService.findApplicablePrice(date, productId, brandId)).thenReturn(mockPrice);
 
@@ -40,7 +48,7 @@ class PriceControllerUnitTest {
         ResponseEntity<PriceResponse> response = controller.getApplicablePrice(date, productId, brandId);
 
         // Then
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         PriceResponse body = response.getBody();
         assertNotNull(body);
         assertEquals(productId, body.productId());

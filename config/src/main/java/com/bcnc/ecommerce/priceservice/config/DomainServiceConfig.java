@@ -10,6 +10,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class DomainServiceConfig {
 
+    /**
+     * Crea el bean {@link PriceSelectionService} del dominio.
+     *
+     * @return una instancia de PriceSelectionService.
+     */
     @Bean
     public PriceSelectionService priceSelectionService() {
         return new PriceSelectionService();

@@ -27,6 +27,9 @@ class PriceJpaRepositoryTest {
     @Autowired
     private PriceJpaRepository repository;
 
+    private static final Long PRODUCT_ID = 35455L;
+    private static final Long BRAND_ID = 1L;
+
     // Predefinir datos para mayor claridad y reutilización
     private final LocalDateTime DATE_2020_06_14_00_00_00 = LocalDateTime.of(2020, 6, 14, 0, 0, 0);
     private final LocalDateTime DATE_2020_06_14_15_00_00 = LocalDateTime.of(2020, 6, 14, 15, 0, 0);
@@ -35,12 +38,33 @@ class PriceJpaRepositoryTest {
     private final LocalDateTime DATE_2020_06_15_11_00_00 = LocalDateTime.of(2020, 6, 15, 11, 0, 0);
     private final LocalDateTime DATE_2020_06_15_16_00_00 = LocalDateTime.of(2020, 6, 15, 16, 0, 0);
     private final LocalDateTime DATE_2020_12_31_23_59_59 = LocalDateTime.of(2020, 12, 31, 23, 59, 59);
+    private final LocalDateTime DATE_2019_01_01_00_00_00 = LocalDateTime.of(2019, 1, 1, 0, 0, 0);
+    private final LocalDateTime DATE_2019_01_31_23_59_59 = LocalDateTime.of(2019, 1, 31, 23, 59, 59);
 
     private PriceEntity price1;
     private PriceEntity price2;
     private PriceEntity price3;
     private PriceEntity price4;
     private PriceEntity priceOffRange; // Para probar exclusión por fechas
+
+    private PriceEntity createPriceEntity(
+            final LocalDateTime start,
+            final LocalDateTime end,
+            final Integer priceList,
+            final Integer priority,
+            final BigDecimal price
+    ) {
+        return PriceEntity.builder()
+                .brandId(BRAND_ID)
+                .startDate(start)
+                .endDate(end)
+                .priceList(priceList)
+                .productId(PRODUCT_ID)
+                .priority(priority)
+                .price(price)
+                .curr("EUR")
+                .build();
+    }
 
     @BeforeEach // Este método se ejecuta antes de cada test.
     void setUp() {
@@ -49,11 +73,11 @@ class PriceJpaRepositoryTest {
         // No es necesario un repository.deleteAll() explícito gracias a @Transactional y create-drop en JpaTestConfig.
 
         // Crear las entidades de prueba (simulando los datos de tu enunciado original)
-        price1 = new PriceEntity(1L, DATE_2020_06_14_00_00_00, DATE_2020_12_31_23_59_59, 1, 35455L, 0, new BigDecimal("35.50"), "EUR");
-        price2 = new PriceEntity(1L, DATE_2020_06_14_15_00_00, DATE_2020_06_14_18_30_00, 2, 35455L, 1, new BigDecimal("25.45"), "EUR");
-        price3 = new PriceEntity(1L, DATE_2020_06_15_00_00_00, DATE_2020_06_15_11_00_00, 3, 35455L, 1, new BigDecimal("30.50"), "EUR");
-        price4 = new PriceEntity(1L, DATE_2020_06_15_16_00_00, DATE_2020_12_31_23_59_59, 4, 35455L, 1, new BigDecimal("38.95"), "EUR");
-        priceOffRange = new PriceEntity(1L, LocalDateTime.of(2019, 1, 1, 0, 0), LocalDateTime.of(2019, 1, 31, 0, 0), 5, 35455L, 0, new BigDecimal("10.00"), "EUR");
+        price1 = createPriceEntity(DATE_2020_06_14_00_00_00, DATE_2020_12_31_23_59_59, 1, 0, new BigDecimal("35.50"));
+        price2 = createPriceEntity(DATE_2020_06_14_15_00_00, DATE_2020_06_14_18_30_00, 2, 1, new BigDecimal("25.45"));
+        price3 = createPriceEntity(DATE_2020_06_15_00_00_00, DATE_2020_06_15_11_00_00, 3, 1, new BigDecimal("30.50"));
+        price4 = createPriceEntity(DATE_2020_06_15_16_00_00, DATE_2020_12_31_23_59_59, 4, 1, new BigDecimal("38.95"));
+        priceOffRange = createPriceEntity(DATE_2019_01_01_00_00_00, DATE_2019_01_31_23_59_59, 5, 0, new BigDecimal("10.00"));
 
         repository.saveAll(List.of(price1, price2, price3, price4, priceOffRange));
     }

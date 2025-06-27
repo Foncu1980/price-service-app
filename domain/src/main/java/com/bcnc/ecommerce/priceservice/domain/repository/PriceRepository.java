@@ -12,10 +12,10 @@ import java.util.List;
  * que proporcione acceso a una fuente de datos.
  * </p>
  */
-public interface PriceRepository
-{
+public interface PriceRepository {
     /**
-     * Recupera los precios aplicables para un producto y cadena en una fecha determinada.
+     * Recupera los precios aplicables para un producto y cadena en
+     * una fecha determinada.
      * <p>
      * La lógica de negocio que determina cuál es el precio final a aplicar
      * (por ejemplo, el de mayor prioridad) se gestiona en la capa de dominio.
@@ -25,5 +25,7 @@ public interface PriceRepository
      * @param brandId         identificador de la cadena.
      * @return Lista de {@link Price} candidatos.
      */
-    List<Price> findApplicablePrices(LocalDateTime applicationDate, Long productId, Long brandId);
+    List<Price> findApplicablePrices(LocalDateTime applicationDate,
+                                     Long productId,
+                                     Long brandId);
 }

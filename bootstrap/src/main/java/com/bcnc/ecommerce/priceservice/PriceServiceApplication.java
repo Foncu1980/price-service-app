@@ -9,12 +9,16 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
  * Esta clase arranca el contexto de Spring Boot.
  */
 @SpringBootApplication
-public class PriceServiceApplication
-{
-	public static void main(String[] args)
-	{
-		new SpringApplicationBuilder(PriceServiceApplication.class)
-				.profiles("default")
-				.run(args);
-	}
+public class PriceServiceApplication {
+    /**
+     * Método principal que arranca la aplicación.
+     *
+     * @param args argumentos de línea de comandos (por ejemplo,
+     * {@code --spring.profiles.active=dev})
+     */
+    public static void main(final String[] args) {
+        new SpringApplicationBuilder(PriceServiceApplication.class)
+            .profiles("default")
+            .run(args);
+    }
 }

@@ -11,7 +11,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
 import com.bcnc.ecommerce.priceservice.application.impl.PriceServiceImpl;
-import com.bcnc.ecommerce.priceservice.application.exception.PriceNotFoundException;
+import com.bcnc.ecommerce.priceservice.domain.exception.PriceNotFoundException;
 import com.bcnc.ecommerce.priceservice.domain.model.Price;
 import com.bcnc.ecommerce.priceservice.domain.repository.PriceRepository;
 
@@ -45,8 +45,16 @@ class PriceServiceImplTest {
         Long brandId = 1L;
         LocalDateTime date = LocalDateTime.of(2020, 6, 14, 16, 0);
 
-        Price price = new Price(brandId, date.minusHours(1), date.plusHours(1), 1, productId, 0,
-                new BigDecimal("35.50"), "EUR");
+        Price price = Price.builder()
+                .brandId(brandId)
+                .startDate(date.minusHours(1))
+                .endDate(date.plusHours(1))
+                .priceList(1)
+                .productId(productId)
+                .priority(0)
+                .price(new BigDecimal("35.50"))
+                .curr("EUR")
+                .build();
 
         List<Price> prices = List.of(price);
 
@@ -106,10 +114,27 @@ class PriceServiceImplTest {
         Long brandId = 1L;
         LocalDateTime date = LocalDateTime.of(2020, 6, 14, 18, 0);
 
-        Price lowPriority = new Price(brandId, date.minusHours(1), date.plusHours(2), 1, productId, 0,
-                new BigDecimal("30.00"), "EUR");
-        Price highPriority = new Price(brandId, date.minusHours(2), date.plusHours(1), 2, productId, 1,
-                new BigDecimal("50.00"), "EUR");
+        Price lowPriority = Price.builder()
+                .brandId(brandId)
+                .startDate(date.minusHours(1))
+                .endDate(date.plusHours(2))
+                .priceList(1)
+                .productId(productId)
+                .priority(0)
+                .price(new BigDecimal("30.00"))
+                .curr("EUR")
+                .build();
+
+        Price highPriority = Price.builder().
+                brandId(brandId)
+                .startDate(date.minusHours(2))
+                .endDate(date.plusHours(1))
+                .priceList(2)
+                .productId(productId)
+                .priority(1)
+                .price(new BigDecimal("50.00"))
+                .curr("EUR")
+                .build();
 
         List<Price> prices = List.of(lowPriority, highPriority);
 
