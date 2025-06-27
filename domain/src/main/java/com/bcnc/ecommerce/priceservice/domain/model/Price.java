@@ -365,4 +365,18 @@ public final class Price {
                 productId, priority, price, curr
         );
     }
+
+    /**
+     * Verifica si este precio es aplicable en la fecha dada.
+     *
+     * @param date La fecha a verificar.
+     * @return true si el precio es válido para la fecha, false en caso
+     * contrario.
+     */
+    public boolean isApplicableOn(final LocalDateTime date) {
+
+        Objects.requireNonNull(date,
+                "La fecha de aplicación no puede ser nula.");
+        return !date.isBefore(this.startDate) && !date.isAfter(this.endDate);
+    }
 }

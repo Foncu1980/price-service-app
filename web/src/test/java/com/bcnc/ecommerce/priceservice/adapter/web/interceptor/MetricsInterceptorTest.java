@@ -1,18 +1,22 @@
 package com.bcnc.ecommerce.priceservice.adapter.web.interceptor;
 
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
-import java.util.stream.Stream;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import static org.mockito.Mockito.*;
 
 class MetricsInterceptorTest {
 
@@ -20,7 +24,9 @@ class MetricsInterceptorTest {
     private static final String URI_NOT_FOUND = "/prices/notfound";
     private static final String URI_INVALID = "/prices/invalid";
     private static final String URI_ERROR = "/prices/error";
-    private static final String URI_EXCLUDED = "/favicon.ico";
+    private static final String URI_FAVICON = "/favicon.ico";
+    private static final String URI_SWAGGER_UI = "/swagger-ui/index.html";
+    private static final String URI_API_DOCS = "/v3/api-docs";
     private static final String METHOD_GET = "GET";
     private static final int STATUS_200 = 200;
     private static final int STATUS_400 = 400;
@@ -62,15 +68,16 @@ class MetricsInterceptorTest {
         verify(mockCounter, times(2)).increment(); // both counters
     }
 
-    @Test
-    void shouldNotIncrementCounterForExcludedUri()
+    @ParameterizedTest
+    @MethodSource("excludedUris")
+    void shouldNotIncrementCounterForExcludedUris(String uri)
     {
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
 
-        when(request.getMethod()).thenReturn(METHOD_GET);
-        when(request.getRequestURI()).thenReturn(URI_EXCLUDED);
-        when(response.getStatus()).thenReturn(STATUS_200);
+        when(request.getMethod()).thenReturn("GET");
+        when(request.getRequestURI()).thenReturn(uri);
+        when(response.getStatus()).thenReturn(200);
 
         metricsInterceptor.afterCompletion(request, response, null, null);
 
@@ -104,6 +111,14 @@ class MetricsInterceptorTest {
                 Arguments.of(STATUS_400, URI_INVALID),
                 Arguments.of(STATUS_404, URI_NOT_FOUND),
                 Arguments.of(STATUS_500, URI_ERROR)
+        );
+    }
+
+    static Stream<String> excludedUris() {
+        return Stream.of(
+                URI_FAVICON,
+                URI_SWAGGER_UI,
+                URI_API_DOCS
         );
     }
 }

@@ -1,22 +1,28 @@
 package com.bcnc.ecommerce.priceservice.infrastructure.adapter.secondary.persistence.repository;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.bcnc.ecommerce.priceservice.infrastructure.adapter.secondary.persistence.config.JpaTestConfig;
 import com.bcnc.ecommerce.priceservice.infrastructure.adapter.secondary.persistence.entity.PriceEntity;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach; // Importar BeforeEach
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase; // Importar
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace; // Importar
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringJUnitConfig
 @ContextConfiguration(classes = JpaTestConfig.class)
@@ -93,7 +99,8 @@ class PriceJpaRepositoryTest {
         Long brandId = 1L;
 
         // when
-        List<PriceEntity> foundPrices = repository.findApplicablePrices(applicationDate, productId, brandId);
+        List<PriceEntity> foundPrices = repository.findApplicablePrices(applicationDate, productId, brandId,
+                PageRequest.of(0, 1));
 
         // then
         assertAll(
@@ -110,7 +117,8 @@ class PriceJpaRepositoryTest {
         LocalDateTime applicationDate = LocalDateTime.of(2020, 6, 14, 16, 0);
 
         // when
-        List<PriceEntity> found = repository.findApplicablePrices(applicationDate, 35455L, 1L);
+        List<PriceEntity> found = repository.findApplicablePrices(applicationDate, 35455L, 1L,
+                Pageable.unpaged());
 
         // then
         assertAll(
@@ -127,7 +135,8 @@ class PriceJpaRepositoryTest {
         LocalDateTime applicationDate = LocalDateTime.of(2020, 6, 14, 21, 0);
 
         // when
-        List<PriceEntity> found = repository.findApplicablePrices(applicationDate, 35455L, 1L);
+        List<PriceEntity> found = repository.findApplicablePrices(applicationDate, 35455L, 1L,
+                PageRequest.of(0, 1));
 
         // then
         assertAll(
@@ -143,7 +152,8 @@ class PriceJpaRepositoryTest {
         LocalDateTime applicationDate = LocalDateTime.of(2020, 6, 15, 10, 0);
 
         // when
-        List<PriceEntity> found = repository.findApplicablePrices(applicationDate, 35455L, 1L);
+        List<PriceEntity> found = repository.findApplicablePrices(applicationDate, 35455L, 1L,
+                Pageable.unpaged());
 
         // then
         assertAll(
@@ -160,7 +170,8 @@ class PriceJpaRepositoryTest {
         LocalDateTime applicationDate = LocalDateTime.of(2020, 6, 16, 16, 0);
 
         // when
-        List<PriceEntity> found = repository.findApplicablePrices(applicationDate, 35455L, 1L);
+        List<PriceEntity> found = repository.findApplicablePrices(applicationDate, 35455L, 1L,
+                Pageable.unpaged());
 
         // then
         assertAll(
@@ -175,7 +186,8 @@ class PriceJpaRepositoryTest {
     void shouldReturnEmptyList_whenDateIsOutsideAnyPriceRange() {
         // when
         List<PriceEntity> found = repository.findApplicablePrices(
-                LocalDateTime.of(2021, 1, 1, 0, 0), 35455L, 1L);
+                LocalDateTime.of(2021, 1, 1, 0, 0), 35455L, 1L,
+                PageRequest.of(0, 1));
 
         // then
         assertAll(
@@ -189,7 +201,8 @@ class PriceJpaRepositoryTest {
     void shouldReturnEmptyList_whenProductDoesNotExist() {
         // when
         List<PriceEntity> found = repository.findApplicablePrices(
-                LocalDateTime.of(2020, 6, 14, 16, 0), 99999L, 1L);
+                LocalDateTime.of(2020, 6, 14, 16, 0), 99999L, 1L,
+                PageRequest.of(0, 1));
 
         // then
         assertAll(
@@ -203,7 +216,8 @@ class PriceJpaRepositoryTest {
     void shouldReturnEmptyList_whenBrandDoesNotExist() {
         // when
         List<PriceEntity> found = repository.findApplicablePrices(
-                LocalDateTime.of(2020, 6, 14, 16, 0), 35455L, 99L);
+                LocalDateTime.of(2020, 6, 14, 16, 0), 35455L, 99L,
+                PageRequest.of(0, 1));
 
         // then
         assertAll(
@@ -216,7 +230,8 @@ class PriceJpaRepositoryTest {
     @DisplayName("Fecha igual a startDate => encuentra la tarifa")
     void shouldReturnPrices_whenDateMatchesStartDate() {
         // when
-        List<PriceEntity> found = repository.findApplicablePrices(DATE_2020_06_14_00_00_00, 35455L, 1L);
+        List<PriceEntity> found = repository.findApplicablePrices(DATE_2020_06_14_00_00_00, 35455L, 1L,
+                PageRequest.of(0, 1));
 
         // then
         assertAll(
@@ -229,13 +244,28 @@ class PriceJpaRepositoryTest {
     @DisplayName("Fecha igual a endDate => encuentra las tarifas vigentes")
     void shouldReturnPrices_whenDateMatchesEndDate() {
         // when
-        List<PriceEntity> found = repository.findApplicablePrices(DATE_2020_06_14_18_30_00, 35455L, 1L);
+        List<PriceEntity> found = repository.findApplicablePrices(DATE_2020_06_14_18_30_00, 35455L, 1L,
+                Pageable.unpaged());
 
         // then
         assertAll(
                 () -> assertEquals(2, found.size()),
                 () -> assertTrue(found.contains(price1)),
                 () -> assertTrue(found.contains(price2))
+        );
+    }
+
+    @Test
+    @DisplayName("Devuelve primero el precio con mayor prioridad cuando hay varios válidos")
+    void shouldReturnHighestPriorityFirst() {
+        LocalDateTime applicationDate = LocalDateTime.of(2020, 6, 14, 16, 0); // price1 y price2 válidos
+
+        List<PriceEntity> found = repository.findApplicablePrices(applicationDate, 35455L, 1L, PageRequest.of(0, 2));
+
+        assertAll(
+                () -> assertEquals(2, found.size()),
+                () -> assertEquals(price2, found.get(0)), // price2 tiene priority = 1, price1 = 0
+                () -> assertEquals(price1, found.get(1))
         );
     }
 }

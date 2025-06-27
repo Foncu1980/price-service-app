@@ -4,6 +4,8 @@ import com.bcnc.ecommerce.priceservice.domain.model.Price;
 import com.bcnc.ecommerce.priceservice.domain.repository.PriceRepository;
 import com.bcnc.ecommerce.priceservice.infrastructure.adapter.secondary.persistence.mapper.PriceMapper;
 import com.bcnc.ecommerce.priceservice.infrastructure.adapter.secondary.persistence.repository.PriceJpaRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -20,6 +22,10 @@ import java.util.List;
  */
 @Component
 public class JpaPriceRepositoryAdapter implements PriceRepository {
+
+    /** Campo de ordenación por prioridad. */
+    public static final String PRIORITY = "priority";
+
     /** Repositorio JPA de Spring para acceder a la entidad persistente. */
     private final PriceJpaRepository priceJpaRepository;
     /** Componente encargado del mapeo entre entidad persistente y
@@ -58,7 +64,9 @@ public class JpaPriceRepositoryAdapter implements PriceRepository {
             final Long brandId) {
 
         return priceJpaRepository
-                .findApplicablePrices(applicationDate, productId, brandId)
+                .findApplicablePrices(applicationDate, productId, brandId,
+                        PageRequest.of(0, 1,
+                                Sort.by(PRIORITY).descending()))
                 .stream()
                 .map(priceMapper::toDomain)
                 .toList();

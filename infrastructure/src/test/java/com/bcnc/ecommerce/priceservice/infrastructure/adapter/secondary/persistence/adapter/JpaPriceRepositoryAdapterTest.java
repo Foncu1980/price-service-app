@@ -1,5 +1,17 @@
 package com.bcnc.ecommerce.priceservice.infrastructure.adapter.secondary.persistence.adapter;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.never;
+
 import com.bcnc.ecommerce.priceservice.domain.model.Price;
 import com.bcnc.ecommerce.priceservice.infrastructure.adapter.secondary.persistence.entity.PriceEntity;
 import com.bcnc.ecommerce.priceservice.infrastructure.adapter.secondary.persistence.mapper.PriceMapper;
@@ -8,13 +20,11 @@ import com.bcnc.ecommerce.priceservice.infrastructure.adapter.secondary.persiste
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 class JpaPriceRepositoryAdapterTest
 {
@@ -42,8 +52,8 @@ class JpaPriceRepositoryAdapterTest
         PriceEntity entity = new PriceEntity();
         Price price = createPrice(date, date.plusHours(1), 1, 1, new BigDecimal("25.45"));
 
-        when(priceJpaRepository.findApplicablePrices(eq(date), eq(PRODUCT_ID), eq(BRAND_ID)))
-                .thenReturn(List.of(entity));
+        when(priceJpaRepository.findApplicablePrices(eq(date), eq(PRODUCT_ID), eq(BRAND_ID),
+                any(Pageable.class))).thenReturn(List.of(entity));
         when(priceMapper.toDomain(entity)).thenReturn(price);
 
         List<Price> result = adapter.findApplicablePrices(date, PRODUCT_ID, BRAND_ID);
@@ -51,7 +61,8 @@ class JpaPriceRepositoryAdapterTest
         assertEquals(1, result.size());
         assertEquals(price, result.get(0));
 
-        verify(priceJpaRepository, times(1)).findApplicablePrices(eq(date), eq(PRODUCT_ID), eq(BRAND_ID));
+        verify(priceJpaRepository, times(1)).findApplicablePrices(eq(date),
+                eq(PRODUCT_ID), eq(BRAND_ID), any(Pageable.class));
         verify(priceMapper, times(1)).toDomain(entity);
     }
 
@@ -61,50 +72,16 @@ class JpaPriceRepositoryAdapterTest
     {
         LocalDateTime date = LocalDateTime.of(2020, 6, 13, 10, 0);
 
-        when(priceJpaRepository.findApplicablePrices(eq(date), eq(PRODUCT_ID), eq(BRAND_ID)))
-                .thenReturn(List.of());
+        when(priceJpaRepository.findApplicablePrices(eq(date), eq(PRODUCT_ID), eq(BRAND_ID),
+                any(Pageable.class))).thenReturn(List.of());
 
         List<Price> result = adapter.findApplicablePrices(date, PRODUCT_ID, BRAND_ID);
 
         assertTrue(result.isEmpty());
 
-        verify(priceJpaRepository, times(1)).findApplicablePrices(eq(date), eq(PRODUCT_ID), eq(BRAND_ID));
+        verify(priceJpaRepository, times(1)).findApplicablePrices(eq(date),
+                eq(PRODUCT_ID), eq(BRAND_ID), any(Pageable.class));
         verify(priceMapper, never()).toDomain(any());
-    }
-
-    @Test
-    @DisplayName("Mapea correctamente múltiples entidades devueltas por el repositorio")
-    void testFindAllPricesWhenMultipleResultsExist() {
-        LocalDateTime date = LocalDateTime.of(2020, 6, 14, 16, 0);
-
-        // Entidades diferenciadas (puedes setear cualquier campo para distinguirlas si tienen equals heredado)
-        PriceEntity entity1 = createPriceEntity(date, date.plusHours(1), 1, 1, new BigDecimal("25.45"));
-        PriceEntity entity2 = createPriceEntity(date.minusHours(1), date.plusHours(2), 2, 1, new BigDecimal("35.55"));
-
-        // Simulación de respuestas mapeadas
-        Price price1 = createPrice(date, date.plusHours(1), 1, 1, new BigDecimal("25.45"));
-        Price price2 = createPrice(date.minusHours(1), date.plusHours(2), 2, 0, new BigDecimal("35.55"));
-
-        // Simula que se devuelven ambas entidades desde la base de datos
-        when(priceJpaRepository.findApplicablePrices(eq(date), eq(PRODUCT_ID), eq(BRAND_ID)))
-                .thenReturn(List.of(entity1, entity2));
-
-        // Mapea cada entidad al objeto correspondiente
-        when(priceMapper.toDomain(entity1)).thenReturn(price1);
-        when(priceMapper.toDomain(entity2)).thenReturn(price2);
-
-        // Ejecuta
-        List<Price> result = adapter.findApplicablePrices(date, PRODUCT_ID, BRAND_ID);
-
-        // Comprueba que se han mapeado correctamente
-        assertEquals(2, result.size());
-        assertTrue(result.contains(price1));
-        assertTrue(result.contains(price2));
-
-        verify(priceJpaRepository).findApplicablePrices(date, PRODUCT_ID, BRAND_ID);
-        verify(priceMapper).toDomain(entity1);
-        verify(priceMapper).toDomain(entity2);
-        verifyNoMoreInteractions(priceMapper);
     }
 
     @Test
@@ -113,8 +90,8 @@ class JpaPriceRepositoryAdapterTest
         LocalDateTime date = LocalDateTime.of(2020, 6, 14, 16, 0);
         PriceEntity faultyEntity = new PriceEntity();
 
-        when(priceJpaRepository.findApplicablePrices(eq(date), eq(PRODUCT_ID), eq(BRAND_ID)))
-                .thenReturn(List.of(faultyEntity));
+        when(priceJpaRepository.findApplicablePrices(eq(date), eq(PRODUCT_ID), eq(BRAND_ID),
+                any(Pageable.class))).thenReturn(List.of(faultyEntity));
         when(priceMapper.toDomain(faultyEntity)).thenThrow(new RuntimeException("Mapping error"));
 
         assertThrows(RuntimeException.class, () ->

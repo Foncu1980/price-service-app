@@ -1,19 +1,28 @@
 package com.bcnc.ecommerce.priceservice.adapter.web;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import com.bcnc.ecommerce.priceservice.adapter.web.dto.PriceErrorResponse;
 import com.bcnc.ecommerce.priceservice.domain.exception.PriceNotFoundException;
+
 import jakarta.validation.ConstraintViolationException;
+import java.time.LocalDateTime;
+import java.util.Collections;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import java.time.LocalDateTime;
-import java.util.Collections;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+
 
 /**
  * Unit tests for {@link GlobalExceptionHandler}.

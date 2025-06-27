@@ -40,9 +40,10 @@ public class SecurityConfig {
     };
 
     /**
-     * Propiedades de seguridad externas.
+     * Propiedad de seguridad: el token esperado.
+     * Almacenamos directamente el String inmutable.
      */
-    private final SecurityProperties properties;
+    private final String expectedToken; // Cambia el tipo a String
 
     /**
      * Crea la configuración con las propiedades de seguridad cargadas
@@ -51,7 +52,7 @@ public class SecurityConfig {
      * @param securityProperties propiedades que contienen el token esperado
      */
     public SecurityConfig(final SecurityProperties securityProperties) {
-        this.properties = securityProperties;
+        this.expectedToken = securityProperties.getToken();
     }
 
     /**
@@ -61,7 +62,7 @@ public class SecurityConfig {
      */
     @Bean
     public TokenAuthenticationFilter tokenAuthenticationFilter() {
-        return new TokenAuthenticationFilter(properties.getToken());
+        return new TokenAuthenticationFilter(expectedToken);
     }
 
     /**

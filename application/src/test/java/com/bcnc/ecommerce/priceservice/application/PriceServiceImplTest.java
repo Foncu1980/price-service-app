@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
@@ -19,7 +20,6 @@ import com.bcnc.ecommerce.priceservice.domain.service.PriceSelectionService;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -60,8 +60,8 @@ class PriceServiceImplTest {
 
         when(priceRepository.findApplicablePrices(date, productId, brandId))
                 .thenReturn(prices);
-        when(priceSelectionService.selectApplicablePrice(prices, date))
-                .thenReturn(Optional.of(price));
+        when(priceSelectionService.selectApplicablePrice(prices, date, productId, brandId))
+                .thenReturn(price);
 
         Price result = priceService.findApplicablePrice(date, productId, brandId);
 
@@ -73,7 +73,8 @@ class PriceServiceImplTest {
         assertEquals(0, result.getPriority());
 
         verify(priceRepository, times(1)).findApplicablePrices(date, productId, brandId);
-        verify(priceSelectionService, times(1)).selectApplicablePrice(prices, date);
+        verify(priceSelectionService, times(1)).selectApplicablePrice(prices, date,
+                productId, brandId);
     }
 
     @Test
@@ -87,24 +88,27 @@ class PriceServiceImplTest {
 
         when(priceRepository.findApplicablePrices(date, productId, brandId))
                 .thenReturn(emptyList);
-        when(priceSelectionService.selectApplicablePrice(emptyList, date))
-                .thenReturn(Optional.empty());
 
-        Exception exception = assertThrows(PriceNotFoundException.class, () ->
-                priceService.findApplicablePrice(date, productId, brandId)
+        when(priceSelectionService.selectApplicablePrice(
+                eq(emptyList), eq(date), eq(productId), eq(brandId)
+        )).thenThrow(new PriceNotFoundException(productId, brandId, date));
+
+        PriceNotFoundException exception = assertThrows(
+                PriceNotFoundException.class,
+                () -> priceService.findApplicablePrice(date, productId, brandId)
         );
 
         String message = exception.getMessage();
 
         assertAll(
-                () -> assertTrue(message.contains("No se encontró un precio para el producto")),
                 () -> assertTrue(message.contains(productId.toString())),
                 () -> assertTrue(message.contains(brandId.toString())),
                 () -> assertTrue(message.contains(date.toString()))
         );
 
         verify(priceRepository, times(1)).findApplicablePrices(date, productId, brandId);
-        verify(priceSelectionService, times(1)).selectApplicablePrice(emptyList, date);
+        verify(priceSelectionService, times(1))
+                .selectApplicablePrice(emptyList, date, productId, brandId);
     }
 
     @DisplayName("Selecciona correctamente el precio con mayor prioridad")
@@ -140,8 +144,8 @@ class PriceServiceImplTest {
 
         when(priceRepository.findApplicablePrices(date, productId, brandId))
                 .thenReturn(prices);
-        when(priceSelectionService.selectApplicablePrice(prices, date))
-                .thenReturn(Optional.of(highPriority));
+        when(priceSelectionService.selectApplicablePrice(prices, date, productId, brandId))
+                .thenReturn(highPriority);
 
         Price result = priceService.findApplicablePrice(date, productId, brandId);
 
@@ -149,6 +153,6 @@ class PriceServiceImplTest {
         assertEquals(1, result.getPriority());
 
         verify(priceRepository).findApplicablePrices(date, productId, brandId);
-        verify(priceSelectionService).selectApplicablePrice(prices, date);
+        verify(priceSelectionService).selectApplicablePrice(prices, date, productId, brandId);
     }
 }

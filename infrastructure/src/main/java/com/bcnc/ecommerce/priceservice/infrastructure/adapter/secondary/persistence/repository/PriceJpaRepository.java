@@ -1,6 +1,7 @@
 package com.bcnc.ecommerce.priceservice.infrastructure.adapter.secondary.persistence.repository;
 
 import com.bcnc.ecommerce.priceservice.infrastructure.adapter.secondary.persistence.entity.PriceEntity;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -27,6 +28,7 @@ public interface PriceJpaRepository extends JpaRepository<PriceEntity, Long> {
      * @param applicationDate  fecha en la que debe aplicarse la tarifa.
      * @param productId        identificador del producto.
      * @param brandId          identificador de la cadena.
+     * @param pageable         objeto de paginación.
      * @return lista de tarifas aplicables ordenadas por prioridad
      * (de mayor a menor).
      */
@@ -35,9 +37,11 @@ public interface PriceJpaRepository extends JpaRepository<PriceEntity, Long> {
     WHERE p.productId = :productId
       AND p.brandId = :brandId
       AND :applicationDate BETWEEN p.startDate AND p.endDate
+      ORDER BY p.priority DESC
 """)
     List<PriceEntity> findApplicablePrices(
             @Param("applicationDate") LocalDateTime applicationDate,
             @Param("productId") Long productId,
-            @Param("brandId") Long brandId);
+            @Param("brandId") Long brandId,
+            Pageable pageable);
 }

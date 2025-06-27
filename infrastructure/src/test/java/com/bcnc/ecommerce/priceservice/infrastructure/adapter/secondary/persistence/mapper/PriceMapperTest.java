@@ -1,5 +1,10 @@
 package com.bcnc.ecommerce.priceservice.infrastructure.adapter.secondary.persistence.mapper;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import com.bcnc.ecommerce.priceservice.domain.model.Price;
 import com.bcnc.ecommerce.priceservice.infrastructure.adapter.secondary.persistence.entity.PriceEntity;
 import org.junit.jupiter.api.DisplayName;
@@ -7,8 +12,6 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class PriceMapperTest
 {

@@ -12,6 +12,8 @@ public class MetricsInterceptor implements HandlerInterceptor {
     /**
      * Registro de métricas de Prometheus.
      */
+    // SpotBugs EI_EXPOSE_REP2: falso positivo justificado.
+    // MeterRegistry es inyectado y no se expone ni modifica.
     private final MeterRegistry meterRegistry;
 
     /**

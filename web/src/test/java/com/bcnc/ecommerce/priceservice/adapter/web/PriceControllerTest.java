@@ -1,5 +1,12 @@
 package com.bcnc.ecommerce.priceservice.adapter.web;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+
 import com.bcnc.ecommerce.priceservice.adapter.web.dto.PriceResponse;
 import com.bcnc.ecommerce.priceservice.application.PriceService;
 import com.bcnc.ecommerce.priceservice.domain.model.Price;
@@ -10,10 +17,7 @@ import org.springframework.http.ResponseEntity;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
-class PriceControllerUnitTest {
+class PriceControllerTest {
 
     private PriceService priceService;
     private PriceController controller;

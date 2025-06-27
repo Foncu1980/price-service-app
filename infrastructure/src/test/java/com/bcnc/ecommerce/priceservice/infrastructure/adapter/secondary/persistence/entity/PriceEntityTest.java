@@ -1,12 +1,15 @@
 package com.bcnc.ecommerce.priceservice.infrastructure.adapter.secondary.persistence.entity;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class PriceEntityTest {
 
@@ -40,6 +43,41 @@ class PriceEntityTest {
 
         assertEquals(entity1, entity2);
         assertEquals(entity1.hashCode(), entity2.hashCode());
+    }
+
+    @Test
+    @DisplayName("equals devuelve false si cambia startDate, endDate o price")
+    void testEqualsDifferentStartEndOrPrice() {
+        LocalDateTime start = LocalDateTime.of(2020, 6, 14, 0, 0);
+        LocalDateTime end = start.plusHours(1);
+        BigDecimal price = new BigDecimal("10.00");
+
+        // Base entity
+        PriceEntity base = buildPriceEntity(start, end, price);
+
+        // Cambia startDate
+        PriceEntity diffStart = buildPriceEntity(start.plusHours(1), end, price);
+        assertNotEquals(base, diffStart, "Debería ser distinto por startDate");
+
+        // Cambia endDate
+        PriceEntity diffEnd = buildPriceEntity(start, end.plusHours(1), price);
+        assertNotEquals(base, diffEnd, "Debería ser distinto por endDate");
+
+        // Cambia price
+        PriceEntity diffPrice = buildPriceEntity(start, end, new BigDecimal("15.00"));
+        assertNotEquals(base, diffPrice, "Debería ser distinto por price");
+
+        diffPrice.setCurr("USD");
+        assertNotEquals(base, diffPrice, "Debería ser distinto por Currency");
+
+        diffPrice.setPriceList(5);
+        assertNotEquals(base, diffPrice, "Debería ser distinto por PriceList");
+
+        diffPrice.setProductId(5L);
+        assertNotEquals(base, diffPrice, "Debería ser distinto por ProductId");
+
+        diffPrice.setPriority(5);
+        assertNotEquals(base, diffPrice, "Debería ser distinto por Priority");
     }
 
     @Test
